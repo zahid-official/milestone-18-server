@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import { ZodError } from "zod";
-import config from "../config";
-import { PrismaClientInitializationError, PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/client";
+import config from "../config/index.js";
+import { Prisma } from "@prisma/client";
 
 const globalErrorHandler = (
   error: any,
@@ -28,7 +28,7 @@ const globalErrorHandler = (
   }
 
   // Prisma error handling
-  else if (error instanceof PrismaClientKnownRequestError) {
+  else if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case "P2002":
         statusCode = httpStatus.CONFLICT;
@@ -54,19 +54,19 @@ const globalErrorHandler = (
   }
 
   // Prisma validation error handling
-  else if (error instanceof PrismaClientValidationError) {
+  else if (error instanceof Prisma.PrismaClientValidationError) {
     statusCode = httpStatus.BAD_REQUEST;
     message = "Invalid input data for Prisma query";
   }
 
   // Prisma unknown request error
-  else if (error instanceof PrismaClientUnknownRequestError) {
+  else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
     statusCode = httpStatus.INTERNAL_SERVER_ERROR;
     message = "An unknown database error occurred.";
   }
 
   // Prisma initialization error handling
-  else if (error instanceof PrismaClientInitializationError) {
+  else if (error instanceof Prisma.PrismaClientInitializationError) {
     statusCode = httpStatus.INTERNAL_SERVER_ERROR;
     message = "Database connection failed. Please check your connection.";
   }
