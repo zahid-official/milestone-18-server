@@ -1,43 +1,24 @@
-import cookieParser from "cookie-parser";
 import cors from "cors";
-import express from "express";
-import type { Application, Request, Response } from "express";
-import config from "./config/index.js";
-import globalErrorHandler from "./middlewares/globalErrorHandler.js";
-import notFound from "./middlewares/notFound.js";
-import ModuleRouter from "./routes/index.js";
+import express, { Application, Request, Response } from "express";
+import notFoundHandler from "./app/middlewares/notFoundHandler";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 
 // Express application
 const app: Application = express();
 
-// Middlewares
-app.use(
-  cors({
-    origin: [`${config.frontend_url}`],
-    credentials: true,
-  })
-);
-
-app.use(cookieParser());
+// Middleware
 app.use(express.json());
-app.set("trust proxy", 1);
-app.use(express.urlencoded({ extended: true }));
-
-// routes middleware
-app.use("/api/v1", ModuleRouter);
+app.use(cors());
 
 // Root route
 app.get("/", (req: Request, res: Response) => {
-  res.send({
-    message: "Server is running..",
-    environment: config.node_env,
-    uptime: process.uptime().toFixed(2) + " sec",
-    timeStamp: new Date().toISOString(),
-  });
+  res.send("Welcome to the Wandora Server");
 });
 
-// Handle global & not found error
+// Handle global error
 app.use(globalErrorHandler);
-app.use(notFound);
+
+// Handle not found
+app.use(notFoundHandler);
 
 export default app;
