@@ -29,8 +29,10 @@ const bootstrap = async () => {
   }
 };
 
-// Start the application
-bootstrap();
+// Initialize the application
+(async () => {
+  await bootstrap();
+})();
 
 // Graceful shutdown handlers
 const handleExit = (signal: string, error?: unknown) => {
