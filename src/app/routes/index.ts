@@ -1,5 +1,6 @@
 import { Router } from "express";
 import AdminRoutes from "../modules/admin/admin.routes";
+import CustomerRoutes from "../modules/customer/customer.routes";
 import UserRoutes from "../modules/user/user.routes";
 
 // Initialize main router
@@ -10,6 +11,10 @@ const moduleRoutes = [
   {
     path: "/user",
     route: UserRoutes,
+  },
+  {
+    path: "/customer",
+    route: CustomerRoutes,
   },
   {
     path: "/admin",
