@@ -16,8 +16,8 @@ const loadEnvs = (): EnvConfig => {
     "EXPRESS_SESSION_SECRET",
     "BCRYPT_SALT_ROUNDS",
 
-    "SUPER_ADMIN_EMAIL",
-    "SUPER_ADMIN_PASSWORD",
+    "DEFAULT_ADMIN_EMAIL",
+    "DEFAULT_ADMIN_PASSWORD",
   ];
 
   // Check missing envs
@@ -54,8 +54,8 @@ const loadEnvs = (): EnvConfig => {
       "BCRYPT_SALT_ROUNDS"
     ),
 
-    SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
-    SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+    DEFAULT_ADMIN_EMAIL: process.env.DEFAULT_ADMIN_EMAIL as string,
+    DEFAULT_ADMIN_PASSWORD: process.env.DEFAULT_ADMIN_PASSWORD as string,
   };
 };
 

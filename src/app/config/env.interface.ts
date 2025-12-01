@@ -12,8 +12,8 @@ interface EnvConfig {
   BCRYPT_SALT_ROUNDS: number;
   EXPRESS_SESSION_SECRET: string;
 
-  SUPER_ADMIN_EMAIL: string;
-  SUPER_ADMIN_PASSWORD: string;
+  DEFAULT_ADMIN_EMAIL: string;
+  DEFAULT_ADMIN_PASSWORD: string;
 }
 
 export default EnvConfig;

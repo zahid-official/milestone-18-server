@@ -4,6 +4,7 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import envVars from "./app/config/env";
+import createDefaultAdmin from "./app/utils/defaultAdmin";
 
 let server: Server;
 const port = envVars.PORT || 5000;
@@ -32,6 +33,7 @@ const bootstrap = async () => {
 // Initialize the application
 (async () => {
   await bootstrap();
+  await createDefaultAdmin();
 })();
 
 // Graceful shutdown handlers
