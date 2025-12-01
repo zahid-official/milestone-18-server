@@ -4,5 +4,5 @@ import { Router } from "express";
 const router = Router();
 
 // Export user routes
-const userRoutes = router;
-export default userRoutes;
+const UserRoutes = router;
+export default UserRoutes;

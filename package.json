@@ -1,15 +1,17 @@
 {
-  "name": "wandora-backend",
+  "name": "lorvic-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "lint": "pnpm eslint ./src"
+    "lint": "pnpm eslint ./src",
+    "build": "tsc",
+    "start": "node ./dist/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Zahidul Islam",
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {
@@ -24,6 +26,7 @@
     "typescript-eslint": "^8.39.1"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",

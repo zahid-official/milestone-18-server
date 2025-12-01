@@ -1,5 +1,6 @@
 import { Router } from "express";
-import userRoutes from "../modules/user.routes";
+import AdminRoutes from "../modules/admin/admin.routes";
+import UserRoutes from "../modules/user/user.routes";
 
 // Initialize main router
 const router = Router();
@@ -8,7 +9,11 @@ const router = Router();
 const moduleRoutes = [
   {
     path: "/user",
-    route: userRoutes,
+    route: UserRoutes,
+  },
+  {
+    path: "/admin",
+    route: AdminRoutes,
   },
 ];
 
@@ -18,5 +23,5 @@ moduleRoutes.forEach((route) => {
 });
 
 // Export main router
-const moduleRouter = router;
-export default moduleRouter;
+const ModuleRouter = router;
+export default ModuleRouter;

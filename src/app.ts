@@ -5,7 +5,7 @@ import expressSession from "express-session";
 import envVars from "./app/config/env";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import notFoundHandler from "./app/middlewares/notFoundHandler";
-import moduleRouter from "./app/routes";
+import ModuleRouter from "./app/routes";
 
 // Express application
 const app: Application = express();
@@ -31,7 +31,7 @@ app.use(
 );
 
 // routes middleware
-app.use("/api/v1", moduleRouter);
+app.use("/api/v1", ModuleRouter);
 
 // Root route
 app.get("/", (req: Request, res: Response) => {

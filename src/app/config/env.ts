@@ -2,7 +2,6 @@ import "dotenv/config";
 import EnvConfig from "./env.interface";
 
 const loadEnvs = (): EnvConfig => {
-  // Check missing envs
   const requiredEnvs: string[] = [
     "DB_URL",
     "PORT",
@@ -21,16 +20,26 @@ const loadEnvs = (): EnvConfig => {
     "SUPER_ADMIN_PASSWORD",
   ];
 
+  // Check missing envs
   requiredEnvs.forEach((key) => {
     if (!process.env[key]) {
       throw new Error(`Missing the required enviroment variable : ${key}`);
     }
   });
 
+  // Number validation helper
+  const assertNumber = (value: string, field: string): number => {
+    const num = Number(value);
+    if (isNaN(num)) {
+      throw new Error(`Environment variable ${field} must be a valid number`);
+    }
+    return num;
+  };
+
   // Return validated envs
   return {
     DB_URL: process.env.DB_URL as string,
-    PORT: process.env.PORT as string,
+    PORT: assertNumber(process.env.PORT as string, "PORT"),
     NODE_ENV: process.env.NODE_ENV as "development" | "production",
     FRONTEND_URL: process.env.FRONTEND_URL as string,
 
@@ -40,7 +49,10 @@ const loadEnvs = (): EnvConfig => {
     JWT_REFRESH_EXPIRESIN: process.env.JWT_REFRESH_EXPIRESIN as string,
 
     EXPRESS_SESSION_SECRET: process.env.EXPRESS_SESSION_SECRET as string,
-    BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS as string,
+    BCRYPT_SALT_ROUNDS: assertNumber(
+      process.env.BCRYPT_SALT_ROUNDS as string,
+      "BCRYPT_SALT_ROUNDS"
+    ),
 
     SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
     SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
