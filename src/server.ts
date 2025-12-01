@@ -1,48 +1,65 @@
+/* eslint-disable no-console */
+
 import { Server } from "http";
-import app from "./app.js";
-import config from "./config/index.js";
+import mongoose from "mongoose";
+import app from "./app";
+import envVars from "./app/config/env";
 
-async function bootstrap() {
-  // This variable will hold our server instance
-  let server: Server;
+let server: Server;
+const port = envVars.PORT || 5000;
 
+// Initialize the application
+const bootstrap = async () => {
   try {
-    // Start the server
-    server = app.listen(config.port, () => {
-      console.log(`🚀 Server is running on http://localhost:${config.port}`);
-      console.log(`⚙️  Environment: ${config.node_env}`);
-    });
+    // Connect to MongoDB
+    await mongoose.connect(envVars.DB_URL);
 
-    // Function to gracefully shut down the server
-    const exitHandler = () => {
-      if (server) {
-        server.close(() => {
-          console.log("Server closed gracefully.");
-          process.exit(1); // Exit with a failure code
-        });
-      } else {
-        process.exit(1);
-      }
-    };
-
-    // Handle unhandled promise rejections
-    process.on("unhandledRejection", (error) => {
-      console.log(
-        "Unhandled Rejection is detected, we are closing our server..."
-      );
-      if (server) {
-        server.close(() => {
-          console.log(error);
-          process.exit(1);
-        });
-      } else {
-        process.exit(1);
-      }
+    // Start the express server
+    server = app.listen(port, () => {
+      console.log(`🚀 Server is running on http://localhost:${envVars.PORT}`);
+      console.log(`⚙️  Environment: ${envVars.NODE_ENV}`);
     });
   } catch (error) {
-    console.error("Error during server startup:", error);
+    console.error({
+      success: false,
+      message: "MongoDB connection failed",
+      error,
+    });
     process.exit(1);
   }
-}
+};
 
+// Start the application
 bootstrap();
+
+// Graceful shutdown handlers
+const handleExit = (signal: string, error?: unknown) => {
+  const errorInfo = error ? { error } : {};
+
+  console.error({
+    message: `${signal} received. Server shutting down...`,
+    ...errorInfo,
+  });
+
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  } else {
+    process.exit(1);
+  }
+};
+
+// Unhandled promise rejection
+process.on("unhandledRejection", (error) => {
+  handleExit("Unhandled Rejection", error);
+});
+
+// Uncaught exception
+process.on("uncaughtException", (error) => {
+  handleExit("Uncaught Exception", error);
+});
+
+// Process termination signals
+process.on("SIGTERM", () => handleExit("SIGTERM"));
+process.on("SIGINT", () => handleExit("SIGINT"));

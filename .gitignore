@@ -1,8 +1,4 @@
 node_modules
-.env
-/generated/prisma
+*.env
+.vercel
 dist
-.vercel
-
-.vercel
-.env*.local
