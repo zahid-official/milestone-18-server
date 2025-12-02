@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import AppError from "../../errors/AppError";
 import catchAsync from "../../utils/catchAsync";
-import { setCookies } from "../../utils/cookies";
+import { clearCookies, setCookies } from "../../utils/cookies";
 import sendResponse from "../../utils/sendResponse";
 import passport from "passport";
 import getTokens from "../../utils/getTokens";
@@ -38,9 +38,27 @@ const credentialsLogin = catchAsync(
   }
 );
 
+// Logout user
+const logout = catchAsync(
+  async (req: Request, res: Response) => {
+    // Clear cookies
+    clearCookies(res);
+
+    // Send response
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "User logged out successfully",
+      data: null,
+    });
+  }
+);
+
+
 // Auth controller object
 const AuthController = {
   credentialsLogin,
+  logout,
 };
 
 export default AuthController;
