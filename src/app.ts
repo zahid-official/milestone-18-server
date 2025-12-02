@@ -2,7 +2,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application, Request, Response } from "express";
 import expressSession from "express-session";
+import passport from "passport";
 import envVars from "./app/config/env";
+import "./app/config/passport";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import notFoundHandler from "./app/middlewares/notFoundHandler";
 import ModuleRouter from "./app/routes";
@@ -18,6 +20,8 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(cookieParser());
 app.use(express.json());

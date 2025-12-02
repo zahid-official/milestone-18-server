@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 // Defines user roles
 export enum Role {
   ADMIN = "ADMIN",
@@ -14,10 +16,12 @@ export enum AccountStatus {
 
 // User interface definition
 export interface IUser {
+  _id?: Types.ObjectId;
   email: string;
   password: string;
   role: Role;
   status: AccountStatus;
+  isDeleted: boolean;
   needChangePassword: boolean;
   createdAt?: Date;
 }

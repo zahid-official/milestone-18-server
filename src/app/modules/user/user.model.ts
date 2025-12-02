@@ -12,6 +12,7 @@ const userSchema = new Schema<IUser>(
       enum: Object.values(AccountStatus),
       default: AccountStatus.ACTIVE,
     },
+    isDeleted: { type: Boolean, default: false },
     needChangePassword: { type: Boolean, default: true },
   },
   { versionKey: false, timestamps: true }
