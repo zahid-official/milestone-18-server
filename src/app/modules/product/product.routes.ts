@@ -1,7 +1,7 @@
 import { Router } from "express";
-import VendorController from "./vendor.controller";
 import validateSchema from "../../middlewares/validateSchema";
-import createVendorSchema from "./vendor.validation";
+import ProductController from "./product.controller";
+import createProductSchema from "./product.validation";
 import validateToken from "../../middlewares/validateToken";
 import { Role } from "../user/user.interface";
 
@@ -11,11 +11,11 @@ const router = Router();
 // Post routes
 router.post(
   "/create",
-  validateToken(Role.ADMIN),
-  validateSchema(createVendorSchema),
-  VendorController.createVendor
+  validateToken(Role.VENDOR),
+  validateSchema(createProductSchema),
+  ProductController.createProduct
 );
 
-// Export vendor routes
-const VendorRoutes = router;
-export default VendorRoutes;
+// Export product routes
+const ProductRoutes = router;
+export default ProductRoutes;
