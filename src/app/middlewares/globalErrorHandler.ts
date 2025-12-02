@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import envVars from "../config/env";
 import { ZodError } from "zod";
+import { cloudinaryDelete } from "../config/cloudinary";
 
 const globalErrorHandler = async (
   error: any,
@@ -20,6 +19,20 @@ const globalErrorHandler = async (
   let statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
   let message = error.message || "Something went wrong!!";
   let errorDetails = error;
+
+  // Delete single uploaded file from cloudinary
+  if (req.file) {
+    await cloudinaryDelete(req.file.path);
+  }
+
+  // Delete multiple uploaded files from cloudinary
+  if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+    await Promise.all(
+      (req.files as Express.Multer.File[]).map((file) => {
+        cloudinaryDelete(file.path);
+      })
+    );
+  }
 
   // Zod validation error handling
   if (error instanceof ZodError) {

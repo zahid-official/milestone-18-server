@@ -3,10 +3,12 @@ import { httpStatus } from "../../import";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import ProductService from "./product.service";
+import { IProduct } from "./product.interface";
 
 // Create product
 const createProduct = catchAsync(async (req: Request, res: Response) => {
-  const result = await ProductService.createProduct(req.body);
+  const payload: IProduct = { ...req.body, thumbnail: req.file?.path };
+  const result = await ProductService.createProduct(payload);
 
   // Send response
   sendResponse(res, {

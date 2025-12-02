@@ -43,11 +43,7 @@ const productSpecificationsSchema = z.object({
     .nonnegative({ error: "Length cannot be negative" })
     .optional(),
 
-  meterials: z
-    .enum(Object.values(Materials) as [Materials, ...Materials[]], {
-      error: () => "Meterials value is invalid",
-    })
-    .optional(),
+  meterials: z.enum(Object.values(Materials) as [string]).optional(),
 });
 
 // Zod schema for creating a product
@@ -64,17 +60,6 @@ const createProductSchema = z.object({
     .max(100, { error: "Title cannot exceed 100 characters." })
     .trim(),
 
-  // Stock
-  stock: z
-    .number({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Stock is required"
-          : "Stock must be a number",
-    })
-    .int({ error: "Stock must be an integer." })
-    .nonnegative({ error: "Stock cannot be negative." }),
-
   // Price
   price: z
     .number({
@@ -85,17 +70,16 @@ const createProductSchema = z.object({
     })
     .nonnegative({ error: "Price cannot be negative." }),
 
-  // Discount
-  discount: z
+  // Stock
+  stock: z
     .number({
       error: (issue) =>
         issue.input === undefined
-          ? "Discount is required"
-          : "Discount must be a number",
+          ? "Stock is required"
+          : "Stock must be a number",
     })
-    .min(0, { error: "Discount cannot be negative." })
-    .max(100, { error: "Discount cannot exceed 100." })
-    .optional(),
+    .int({ error: "Stock must be an integer." })
+    .nonnegative({ error: "Stock cannot be negative." }),
 
   // Category
   category: z
@@ -108,6 +92,21 @@ const createProductSchema = z.object({
     .min(2, { error: "Category must be at least 2 characters long." })
     .max(50, { error: "Category cannot exceed 50 characters." })
     .trim(),
+
+  // Thumbnail
+  thumbnail: z.string({ error: "Thumbnail must be string" }).trim().optional(),
+
+  // Discount
+  discount: z
+    .number({
+      error: (issue) =>
+        issue.input === undefined
+          ? "Discount is required"
+          : "Discount must be a number",
+    })
+    .min(0, { error: "Discount cannot be negative." })
+    .max(100, { error: "Discount cannot exceed 100." })
+    .optional(),
 
   // Description
   description: z

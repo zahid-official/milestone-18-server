@@ -39,7 +39,7 @@ app.use("/api/v1", ModuleRouter);
 
 // Root route
 app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to the Wandora Server");
+  res.send("Welcome to the Lorvic Server");
 });
 
 // Handle global error

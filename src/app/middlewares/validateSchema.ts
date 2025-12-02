@@ -5,7 +5,7 @@ import { ZodObject } from "zod";
 const validateSchema = (zodSchema: ZodObject) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     // If the request body contains a 'data' field, parse it as JSON
-    if (req.body.data) {
+    if (req.body?.data) {
       req.body = JSON.parse(req.body.data);
     }
 

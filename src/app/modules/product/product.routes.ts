@@ -4,6 +4,7 @@ import ProductController from "./product.controller";
 import createProductSchema from "./product.validation";
 import validateToken from "../../middlewares/validateToken";
 import { Role } from "../user/user.interface";
+import multerUpload from "../../config/multer";
 
 // Initialize router
 const router = Router();
@@ -11,6 +12,7 @@ const router = Router();
 // Post routes
 router.post(
   "/create",
+  multerUpload.single("file"),
   validateToken(Role.VENDOR),
   validateSchema(createProductSchema),
   ProductController.createProduct

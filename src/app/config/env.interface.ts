@@ -14,6 +14,12 @@ interface EnvConfig {
 
   DEFAULT_ADMIN_EMAIL: string;
   DEFAULT_ADMIN_PASSWORD: string;
+
+  CLOUDINARY: {
+    CLOUD_NAME: string;
+    API_KEY: string;
+    API_SECRET: string;
+  };
 }
 
 export default EnvConfig;

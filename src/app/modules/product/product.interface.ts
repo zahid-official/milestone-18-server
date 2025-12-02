@@ -20,6 +20,7 @@ export interface IProduct {
   price: number;
   stock: number;
   category: string;
+  thumbnail?: string;
   discount?: number;
   description?: string;
   productOverview?: string;

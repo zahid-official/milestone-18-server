@@ -18,6 +18,10 @@ const loadEnvs = (): EnvConfig => {
 
     "DEFAULT_ADMIN_EMAIL",
     "DEFAULT_ADMIN_PASSWORD",
+
+    "CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
   ];
 
   // Check missing envs
@@ -56,6 +60,12 @@ const loadEnvs = (): EnvConfig => {
 
     DEFAULT_ADMIN_EMAIL: process.env.DEFAULT_ADMIN_EMAIL as string,
     DEFAULT_ADMIN_PASSWORD: process.env.DEFAULT_ADMIN_PASSWORD as string,
+
+    CLOUDINARY: {
+      CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+      API_KEY: process.env.CLOUDINARY_API_KEY as string,
+      API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+    },
   };
 };
 
