@@ -48,11 +48,28 @@ const getProfileInfo = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Upate profile info
+const updateProfileInfo = catchAsync(async (req: Request, res: Response) => {
+  const userId = req?.decodedToken?.userId;
+  const userRole = req?.decodedToken?.role;
+  const payload = { ...req.body, profilePhoto: req.file?.path };
+  const result = await UserService.updateProfileInfo(userId, userRole, payload);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Profile info updated successfully",
+    data: result,
+  });
+});
+
 // User controller object
 const UserController = {
   getAllUsers,
   getSingleUser,
   getProfileInfo,
+  updateProfileInfo,
 };
 
 export default UserController;

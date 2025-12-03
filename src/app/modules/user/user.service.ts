@@ -65,11 +65,54 @@ const getProfileInfo = async (userId: string, userRole: string) => {
   }
 };
 
+// Update profile info
+const updateProfileInfo = async (
+  userId: string,
+  userRole: string,
+  payload: any
+) => {
+  switch (userRole) {
+    case Role.ADMIN: {
+      return await Admin.findOneAndUpdate({ userId }, payload, {
+        new: true,
+        runValidators: true,
+      }).populate({
+        path: "userId",
+        select: ["_id", "role", "status", "needChangePassword"],
+      });
+    }
+
+    case Role.VENDOR: {
+      return await Vendor.findOneAndUpdate({ userId }, payload, {
+        new: true,
+        runValidators: true,
+      }).populate({
+        path: "userId",
+        select: ["_id", "role", "status", "needChangePassword"],
+      });
+    }
+
+    case Role.CUSTOMER: {
+      return await Customer.findOneAndUpdate({ userId }, payload, {
+        new: true,
+        runValidators: true,
+      }).populate({
+        path: "userId",
+        select: ["_id", "role", "status", "needChangePassword"],
+      });
+    }
+
+    default:
+      return null;
+  }
+};
+
 // User service object
 const UserService = {
   getAllUsers,
   getSingleUser,
   getProfileInfo,
+  updateProfileInfo,
 };
 
 export default UserService;
