@@ -1,0 +1,29 @@
+import { model, Schema } from "mongoose";
+import { IOrder, OrderStatus } from "./order.interface";
+import { PaymentStatus } from "../payment/payment.interface";
+
+// Mongoose schema for order model
+const orderSchema = new Schema<IOrder>(
+  {
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    paymentId: { type: Schema.Types.ObjectId },
+    quantity: { type: Number, required: true },
+    amount: { type: Number, required: true },
+    orderStatus: {
+      type: String,
+      enum: Object.values(OrderStatus),
+      default: OrderStatus.PENDING,
+    },
+    paymentStatus: {
+      type: String,
+      enum: Object.values(PaymentStatus),
+      default: PaymentStatus.UNPAID,
+    },
+  },
+  { versionKey: false, timestamps: true }
+);
+
+// Create mongoose model from order schema
+const Order = model<IOrder>("Order", orderSchema);
+export default Order;

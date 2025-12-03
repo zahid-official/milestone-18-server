@@ -21,7 +21,6 @@ const productSchema = new Schema<IProduct>(
     stock: { type: Number, required: true },
     category: { type: String, required: true },
     thumbnail: { type: String },
-    discount: { type: Number, default: 0 },
     description: { type: String },
     productOverview: { type: String },
     specifications: productSpecificationsSchema,
