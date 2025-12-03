@@ -18,11 +18,11 @@ const stripeWebhook = catchAsync(async (req: Request, res: Response) => {
       signature as string,
       webhookSecret as string
     );
-  } catch (err: any) {
+  } catch (error: any) {
     return res
       .status(httpStatus.BAD_REQUEST)
       .send(
-        `Stripe webhook signature verification failed error: ${err.message}`
+        `Stripe webhook signature verification failed error: ${error.message}`
       );
   }
 
