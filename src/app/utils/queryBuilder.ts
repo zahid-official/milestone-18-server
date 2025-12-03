@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 
 import { Query } from "mongoose";
-import { excludeFields } from "./contants";
+import { excludeFields } from "./constants";
 
 class QueryBuilder<T> {
   // Class properties

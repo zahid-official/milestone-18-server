@@ -1,5 +1,8 @@
 import QueryBuilder from "../../utils/queryBuilder";
-import { IUser } from "./user.interface";
+import Admin from "../admin/admin.model";
+import Customer from "../customer/customer.model";
+import Vendor from "../vendor/vendor.model";
+import { IUser, Role } from "./user.interface";
 import User from "./user.model";
 
 // Get all users
@@ -33,10 +36,40 @@ const getSingleUser = async (id: string) => {
   return user;
 };
 
+// Get profile info
+const getProfileInfo = async (userId: string, userRole: string) => {
+  switch (userRole) {
+    case Role.ADMIN: {
+      return await Admin.findOne({ userId }).populate({
+        path: "userId",
+        select: ["_id", "role", "status", "needChangePassword"],
+      });
+    }
+
+    case Role.VENDOR: {
+      return await Vendor.findOne({ userId }).populate({
+        path: "userId",
+        select: ["_id", "role", "status", "needChangePassword"],
+      });
+    }
+
+    case Role.CUSTOMER: {
+      return await Customer.findOne({ userId }).populate({
+        path: "userId",
+        select: ["_id", "role", "status", "needChangePassword"],
+      });
+    }
+
+    default:
+      return null;
+  }
+};
+
 // User service object
 const UserService = {
   getAllUsers,
   getSingleUser,
+  getProfileInfo,
 };
 
 export default UserService;

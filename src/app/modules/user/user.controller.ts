@@ -20,25 +20,39 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 // Get single user
-const getSingleUser = catchAsync(
-  async (req: Request, res: Response) => {
-    const id = req?.params?.id;
-    const result = await UserService.getSingleUser(id);
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await UserService.getSingleUser(id);
 
-    // Send response
-    sendResponse(res, {
-      success: true,
-      statusCode: httpStatus.OK,
-      message: "User retrieved successfully",
-      data: result,
-    });
-  }
-);
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User retrieved successfully",
+    data: result,
+  });
+});
+
+// Get profile info
+const getProfileInfo = catchAsync(async (req: Request, res: Response) => {
+  const userId = req?.decodedToken?.userId;
+  const userRole = req?.decodedToken?.role;
+  const result = await UserService.getProfileInfo(userId, userRole);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Profile info retrieved successfully",
+    data: result,
+  });
+});
 
 // User controller object
 const UserController = {
   getAllUsers,
   getSingleUser,
+  getProfileInfo,
 };
 
 export default UserController;

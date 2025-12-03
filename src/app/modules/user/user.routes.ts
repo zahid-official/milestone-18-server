@@ -13,6 +13,11 @@ router.get(
   validateToken(Role.ADMIN),
   UserController.getSingleUser
 );
+router.get(
+  "/profile",
+  validateToken(...Object.values(Role)),
+  UserController.getProfileInfo
+);
 
 // Export user routes
 const UserRoutes = router;
