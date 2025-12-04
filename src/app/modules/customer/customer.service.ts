@@ -31,6 +31,15 @@ const getAllCustomers = async (query: Record<string, string>) => {
   };
 };
 
+// Get single customer
+const getSingleCustomer = async (id: string) => {
+  const customer = await Customer.findById(id);
+  if (!customer) {
+    throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
+  }
+  return customer;
+};
+
 // Create customer
 const createCustomer = async (payload: ICustomer, password: string) => {
   const session = await mongoose.startSession();
@@ -75,6 +84,7 @@ const createCustomer = async (payload: ICustomer, password: string) => {
 // Customer service object
 const CustomerService = {
   getAllCustomers,
+  getSingleCustomer,
   createCustomer,
 };
 

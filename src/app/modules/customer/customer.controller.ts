@@ -21,6 +21,20 @@ const getAllCustomers = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Get single customer
+const getSingleCustomer = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await CustomerService.getSingleCustomer(id);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Customer retrieved successfully",
+    data: result,
+  });
+});
+
 // Create customer
 const createCustomer = catchAsync(async (req: Request, res: Response) => {
   const { password, ...body } = req?.body || {};
@@ -38,6 +52,7 @@ const createCustomer = catchAsync(async (req: Request, res: Response) => {
 // Customer controller object
 const CustomerController = {
   getAllCustomers,
+  getSingleCustomer,
   createCustomer,
 };
 
