@@ -40,6 +40,52 @@ const getSingleCustomer = async (id: string) => {
   return customer;
 };
 
+// Delete customer (soft delete customer and linked user)
+const deleteCustomer = async (id: string) => {
+  const session = await mongoose.startSession();
+
+  try {
+    return await session.withTransaction(async () => {
+      // Check if customer exists
+      const customer = await Customer.findById(id).session(session);
+      if (!customer) {
+        throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
+      }
+
+      // Stop if this customer is already soft-deleted
+      if (customer.isDeleted) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Customer already deleted");
+      }
+
+      // Soft delete customer
+      const updatedCustomer = await Customer.findByIdAndUpdate(
+        customer._id,
+        { isDeleted: true },
+        { new: true, session }
+      );
+
+      // Soft delete linked user
+      const updatedUser = await User.findByIdAndUpdate(
+        customer.userId,
+        { isDeleted: true },
+        { new: true, session }
+      );
+      if (!updatedUser) {
+        throw new AppError(httpStatus.NOT_FOUND, "Linked user not found");
+      }
+
+      return updatedCustomer;
+    });
+  } catch (error: any) {
+    throw new AppError(
+      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
+      error.message || "Failed to delete customer"
+    );
+  } finally {
+    await session.endSession();
+  }
+};
+
 // Create customer
 const createCustomer = async (payload: ICustomer, password: string) => {
   const session = await mongoose.startSession();
@@ -85,6 +131,7 @@ const createCustomer = async (payload: ICustomer, password: string) => {
 const CustomerService = {
   getAllCustomers,
   getSingleCustomer,
+  deleteCustomer,
   createCustomer,
 };
 

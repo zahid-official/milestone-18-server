@@ -16,6 +16,13 @@ router.get(
   CustomerController.getSingleCustomer
 );
 
+// Delete routes
+router.delete(
+  "/:id",
+  validateToken(Role.ADMIN),
+  CustomerController.deleteCustomer
+);
+
 // Post routes
 router.post(
   "/create",
