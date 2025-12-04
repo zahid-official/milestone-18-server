@@ -49,11 +49,27 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Delete admin
+const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const userId = req?.decodedToken?.userId;
+  const result = await AdminService.deleteAdmin(id, userId);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Admin deleted successfully",
+    data: result,
+  });
+});
+
 // Admin controller object
 const AdminController = {
   getAllAdmins,
   getSingleAdmin,
   createAdmin,
+  deleteAdmin,
 };
 
 export default AdminController;

@@ -24,6 +24,13 @@ router.post(
   AdminController.createAdmin
 );
 
+// Delete routes
+router.delete(
+  "/:id",
+  validateToken(Role.ADMIN),
+  AdminController.deleteAdmin
+);
+
 // Export admin routes
 const AdminRoutes = router;
 export default AdminRoutes;

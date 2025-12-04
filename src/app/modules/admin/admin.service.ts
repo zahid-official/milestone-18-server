@@ -71,8 +71,62 @@ const createAdmin = async (payload: IAdmin, password: string) => {
     });
   } catch (error: any) {
     throw new AppError(
-      httpStatus.INTERNAL_SERVER_ERROR,
+      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
       error.message || "Failed to create admin"
+    );
+  } finally {
+    await session.endSession();
+  }
+};
+
+// Delete admin
+const deleteAdmin = async (id: string, userId: string) => {
+  const session = await mongoose.startSession();
+
+  try {
+    return await session.withTransaction(async () => {
+      // Check if admin exist
+      const admin = await Admin.findById(id).session(session);
+      if (!admin) {
+        throw new AppError(httpStatus.NOT_FOUND, "Admin not found");
+      }
+
+      // Stop if this admin is already soft-deleted
+      if (admin.isDeleted) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Admin already deleted");
+      }
+
+      // Prevent an admin from deleting their own account
+      if (userId === admin.userId.toString()) {
+        throw new AppError(
+          httpStatus.FORBIDDEN,
+          "You cannot delete your own admin account"
+        );
+      }
+
+      // Soft delete admin
+      const updatedAdmin = await Admin.findByIdAndUpdate(
+        admin._id,
+        { isDeleted: true },
+        { new: true, session }
+      );
+
+      // Soft delete linked user
+      const updatedUser = await User.findByIdAndUpdate(
+        admin.userId,
+        { isDeleted: true },
+        { new: true, session }
+      );
+      if (!updatedUser) {
+        throw new AppError(httpStatus.NOT_FOUND, "Linked user not found");
+      }
+
+      return updatedAdmin;
+    });
+  } catch (error: any) {
+    throw new AppError(
+      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
+      error.message || "Failed to delete admin"
     );
   } finally {
     await session.endSession();
@@ -84,6 +138,7 @@ const AdminService = {
   getAllAdmins,
   getSingleAdmin,
   createAdmin,
+  deleteAdmin,
 };
 
 export default AdminService;

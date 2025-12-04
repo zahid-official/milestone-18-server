@@ -39,7 +39,7 @@ const createCustomer = async (payload: ICustomer, password: string) => {
     });
   } catch (error: any) {
     throw new AppError(
-      httpStatus.INTERNAL_SERVER_ERROR,
+      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
       error.message || "Failed to create customer"
     );
   } finally {
