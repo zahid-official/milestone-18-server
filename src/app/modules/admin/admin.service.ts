@@ -6,6 +6,34 @@ import mongoose from "mongoose";
 import envVars from "../../config/env";
 import AppError from "../../errors/AppError";
 import { bcryptjs, httpStatus } from "../../import";
+import QueryBuilder from "../../utils/queryBuilder";
+
+// Get all admins
+const getAllAdmins = async (query: Record<string, string>) => {
+  // Define searchable fields
+  const searchFields = ["name", "email", "phone"];
+
+  // Build the query using QueryBuilder class and fetch users
+  const queryBuilder = new QueryBuilder<IAdmin>(
+    Admin.find({ isDeleted: { $ne: true } }),
+    query
+  );
+  const admins = await queryBuilder
+    .sort()
+    .filter()
+    .paginate()
+    .fieldSelect()
+    .search(searchFields)
+    .build();
+
+  // Get meta data for pagination
+  const meta = await queryBuilder.meta();
+
+  return {
+    data: admins,
+    meta,
+  };
+};
 
 // Create admin
 const createAdmin = async (payload: IAdmin, password: string) => {
@@ -44,6 +72,7 @@ const createAdmin = async (payload: IAdmin, password: string) => {
 
 // Admin service object
 const AdminService = {
+  getAllAdmins,
   createAdmin,
 };
 

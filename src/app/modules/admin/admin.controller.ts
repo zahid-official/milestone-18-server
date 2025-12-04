@@ -4,6 +4,23 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import AdminService from "./admin.service";
 
+// Get all admins
+const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
+  const query = req?.query;
+  const result = await AdminService.getAllAdmins(
+    query as Record<string, string>
+  );
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All admins retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 // Create admin
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
   const { password, ...body } = req?.body || {};
@@ -20,6 +37,7 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
 
 // Admin controller object
 const AdminController = {
+  getAllAdmins,
   createAdmin,
 };
 
