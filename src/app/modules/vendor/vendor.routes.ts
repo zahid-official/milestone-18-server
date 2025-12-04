@@ -16,6 +16,13 @@ router.get(
   VendorController.getSingleVendor
 );
 
+// Delete routes
+router.delete(
+  "/:id",
+  validateToken(Role.ADMIN),
+  VendorController.deleteVendor
+);
+
 // Post routes
 router.post(
   "/create",

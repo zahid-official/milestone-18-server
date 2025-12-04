@@ -35,6 +35,20 @@ const getSingleVendor = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Delete vendor
+const deleteVendor = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await VendorService.deleteVendor(id);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Vendor deleted successfully",
+    data: result,
+  });
+});
+
 // Create vendor
 const createVendor = catchAsync(async (req: Request, res: Response) => {
   const { password, ...body } = req?.body || {};
@@ -53,6 +67,7 @@ const createVendor = catchAsync(async (req: Request, res: Response) => {
 const VendorController = {
   getAllVendors,
   getSingleVendor,
+  deleteVendor,
   createVendor,
 };
 
