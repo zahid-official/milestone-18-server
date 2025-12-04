@@ -33,7 +33,10 @@ const getAllCustomers = async (query: Record<string, string>) => {
 
 // Get single customer
 const getSingleCustomer = async (id: string) => {
-  const customer = await Customer.findById(id);
+  const customer = await Customer.findOne({
+    _id: id,
+    isDeleted: { $ne: true },
+  });
   if (!customer) {
     throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
   }

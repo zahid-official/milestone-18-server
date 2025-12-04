@@ -10,7 +10,11 @@ const router = Router();
 
 // Get routes
 router.get("/", validateToken(Role.VENDOR), OrderController.getAllOrders);
-router.get("/userOrders", validateToken(Role.CUSTOMER), OrderController.getAllOrdersByUser);
+router.get(
+  "/userOrders",
+  validateToken(Role.CUSTOMER),
+  OrderController.getAllOrdersByUser
+);
 
 // Post routes
 router.post(
@@ -21,6 +25,11 @@ router.post(
 );
 
 // Patch routes
+router.patch(
+  "/:id/in-progress",
+  validateToken(Role.VENDOR),
+  OrderController.updateOrderStatusToInProgress
+);
 router.patch(
   "/:id/cancel",
   validateToken(Role.CUSTOMER),

@@ -1,12 +1,12 @@
-import User from "../user/user.model";
-import { Role } from "../user/user.interface";
-import { IAdmin } from "./admin.interface";
-import Admin from "./admin.model";
 import mongoose from "mongoose";
 import envVars from "../../config/env";
 import AppError from "../../errors/AppError";
 import { bcryptjs, httpStatus } from "../../import";
 import QueryBuilder from "../../utils/queryBuilder";
+import { Role } from "../user/user.interface";
+import User from "../user/user.model";
+import { IAdmin } from "./admin.interface";
+import Admin from "./admin.model";
 
 // Get all admins
 const getAllAdmins = async (query: Record<string, string>) => {
@@ -37,13 +37,12 @@ const getAllAdmins = async (query: Record<string, string>) => {
 
 // Get single admin
 const getSingleAdmin = async (id: string) => {
-  const admin = await Admin.findById(id);
+  const admin = await Admin.findOne({ _id: id, isDeleted: { $ne: true } });
   if (!admin) {
     throw new AppError(httpStatus.NOT_FOUND, "Admin not found");
   }
   return admin;
 };
-
 // Create admin
 const createAdmin = async (payload: IAdmin, password: string) => {
   const session = await mongoose.startSession();

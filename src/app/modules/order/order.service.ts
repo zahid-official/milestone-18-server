@@ -1,19 +1,18 @@
 import mongoose from "mongoose";
+import envVars from "../../config/env";
+import stripe from "../../config/stripe";
 import AppError from "../../errors/AppError";
 import { httpStatus } from "../../import";
+import QueryBuilder from "../../utils/queryBuilder";
 import Customer from "../customer/customer.model";
 import { PaymentStatus } from "../payment/payment.interface";
-import Product from "../product/product.model";
-import { IOrder } from "./order.interface";
-import Order from "./order.model";
 import Payment from "../payment/payment.model";
-import stripe from "../../config/stripe";
-import envVars from "../../config/env";
-import { OrderStatus } from "./order.interface";
-import QueryBuilder from "../../utils/queryBuilder";
+import Product from "../product/product.model";
 import Vendor from "../vendor/vendor.model";
+import { IOrder, OrderStatus } from "./order.interface";
+import Order from "./order.model";
 
-// Get all orders (no user filter)
+// Get all orders
 const getAllOrders = async (
   vendorUserId: string,
   query: Record<string, string>
@@ -23,7 +22,10 @@ const getAllOrders = async (
   // Find vendor by the authenticated user's id
   const vendor = await Vendor.findOne({ userId: vendorUserId });
   if (!vendor) {
-    throw new AppError(httpStatus.FORBIDDEN, "Vendor not found or unauthorized");
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Vendor not found or unauthorized"
+    );
   }
 
   // Collect product ids that belong to this vendor
@@ -293,12 +295,57 @@ const cancelOrder = async (orderId: string, userId: string) => {
   }
 };
 
+// Update order status to in-progress (vendor scoped)
+const updateOrderStatusToInProgress = async (
+  orderId: string,
+  vendorUserId: string
+) => {
+  // Resolve vendor
+  const vendor = await Vendor.findOne({ userId: vendorUserId });
+  if (!vendor) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Vendor not found or unauthorized"
+    );
+  }
+
+  // Load order with product to verify ownership
+  const order = await Order.findById(orderId).populate("productId");
+  if (!order) {
+    throw new AppError(httpStatus.NOT_FOUND, "Order not found");
+  }
+
+  const product: any = order.productId;
+  if (!product || product.vendorId?.toString() !== vendor._id.toString()) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You are not authorized to update this order"
+    );
+  }
+
+  // Only allow transition when payment is paid and order is confirmed
+  if (
+    order.paymentStatus !== PaymentStatus.PAID ||
+    order.orderStatus !== OrderStatus.CONFIRMED
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Order must be paid and confirmed before processing"
+    );
+  }
+
+  order.orderStatus = OrderStatus.IN_PROCESSING;
+  await order.save();
+  return order;
+};
+
 // Order service object
 const OrderService = {
   getAllOrders,
   getAllOrdersByUser,
   createOrder,
   cancelOrder,
+  updateOrderStatusToInProgress,
 };
 
 export default OrderService;

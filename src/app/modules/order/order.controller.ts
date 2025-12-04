@@ -4,7 +4,7 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import OrderService from "./order.service";
 
-// Get all orders 
+// Get all orders
 const getAllOrders = catchAsync(async (req: Request, res: Response) => {
   const query = req?.query;
   const vendorUserId = req?.decodedToken?.userId;
@@ -71,12 +71,33 @@ const cancelOrder = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Mark order in-progress (vendor only)
+const updateOrderStatusToInProgress = catchAsync(
+  async (req: Request, res: Response) => {
+    const orderId = req?.params?.id;
+    const vendorUserId = req?.decodedToken?.userId;
+
+    const result = await OrderService.updateOrderStatusToInProgress(
+      orderId,
+      vendorUserId
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Order marked as in-progress",
+      data: result,
+    });
+  }
+);
+
 // Order controller object
 const OrderController = {
   getAllOrders,
   getAllOrdersByUser,
   createOrder,
   cancelOrder,
+  updateOrderStatusToInProgress,
 };
 
 export default OrderController;

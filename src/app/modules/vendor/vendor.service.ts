@@ -1,12 +1,12 @@
-import User from "../user/user.model";
-import { Role } from "../user/user.interface";
-import { IVendor } from "./vendor.interface";
-import Vendor from "./vendor.model";
 import mongoose from "mongoose";
 import envVars from "../../config/env";
 import AppError from "../../errors/AppError";
 import { bcryptjs, httpStatus } from "../../import";
 import QueryBuilder from "../../utils/queryBuilder";
+import { Role } from "../user/user.interface";
+import User from "../user/user.model";
+import { IVendor } from "./vendor.interface";
+import Vendor from "./vendor.model";
 
 // Get all vendors
 const getAllVendors = async (query: Record<string, string>) => {
@@ -35,7 +35,7 @@ const getAllVendors = async (query: Record<string, string>) => {
 
 // Get single vendor
 const getSingleVendor = async (id: string) => {
-  const vendor = await Vendor.findById(id);
+  const vendor = await Vendor.findOne({ _id: id, isDeleted: { $ne: true } });
   if (!vendor) {
     throw new AppError(httpStatus.NOT_FOUND, "Vendor not found");
   }
@@ -113,10 +113,9 @@ const createVendor = async (payload: IVendor, password: string) => {
       );
 
       // Create vendor linked to user
-      const [vendor] = await Vendor.create(
-        [{ ...payload, userId: user._id }],
-        { session }
-      );
+      const [vendor] = await Vendor.create([{ ...payload, userId: user._id }], {
+        session,
+      });
 
       return vendor;
     });

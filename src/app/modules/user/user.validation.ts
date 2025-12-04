@@ -1,6 +1,6 @@
 import z from "zod";
 
-// Zod schema for update logged user profie info
+// Zod schema for update logged user profile info
 export const updateProfileInfoZodSchema = z.object({
   // Name
   name: z

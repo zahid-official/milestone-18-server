@@ -69,7 +69,10 @@ const getProfileInfo = catchAsync(async (req: Request, res: Response) => {
 const updateProfileInfo = catchAsync(async (req: Request, res: Response) => {
   const userId = req?.decodedToken?.userId;
   const userRole = req?.decodedToken?.role;
-  const payload = { ...req.body, profilePhoto: req.file?.path };
+  const payload = req.body;
+  if (req.file?.path) {
+    payload.profilePhoto = req.file.path;
+  }
   const result = await UserService.updateProfileInfo(userId, userRole, payload);
 
   // Send response
