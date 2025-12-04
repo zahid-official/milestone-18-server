@@ -65,35 +65,42 @@ const stripeWebhook = async (event: Stripe.Event) => {
       const session = event.data.object as Stripe.Checkout.Session;
       const paymentId = session.metadata?.paymentId;
       const orderId = session.metadata?.orderId;
-      const productId = session.metadata?.productId;
-      const quantity = Number(session.metadata?.quantity || 0);
 
-      // Mark payment/order as failed and restore stock
+      // Mark payment/order as failed and restore stock with guard
       const mongoSession = await mongoose.startSession();
       await mongoSession.withTransaction(async () => {
+        // Load order to check current state
+        const order = orderId
+          ? await Order.findById(orderId).session(mongoSession)
+          : null;
+        if (!order) return;
+
+        // Skip if already finalized (cancelled manually or paid)
+        if (
+          order.orderStatus === OrderStatus.CANCELLED ||
+          order.paymentStatus === PaymentStatus.PAID
+        ) {
+          return;
+        }
+
+        // Restore product stock using order data
+        const product = await Product.findById(order.productId).session(
+          mongoSession
+        );
+        if (product) {
+          product.stock += order.quantity;
+          await product.save({ session: mongoSession });
+        }
+
+        // Mark order and payment as failed/cancelled
+        order.orderStatus = OrderStatus.CANCELLED;
+        order.paymentStatus = PaymentStatus.FAILED;
+        await order.save({ session: mongoSession });
+
         if (paymentId) {
           await Payment.findByIdAndUpdate(
             paymentId,
             { paymentStatus: PaymentStatus.FAILED },
-            { session: mongoSession }
-          );
-        }
-
-        if (orderId) {
-          await Order.findByIdAndUpdate(
-            orderId,
-            {
-              paymentStatus: PaymentStatus.FAILED,
-              orderStatus: OrderStatus.CANCELLED,
-            },
-            { session: mongoSession }
-          );
-        }
-
-        if (productId && quantity) {
-          await Product.findByIdAndUpdate(
-            productId,
-            { $inc: { stock: quantity } },
             { session: mongoSession }
           );
         }

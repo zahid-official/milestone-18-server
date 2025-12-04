@@ -89,12 +89,10 @@ const updateProduct = async (id: string, payload: Partial<IProduct>) => {
 
 // Delete product
 const deleteProduct = async (id: string) => {
-  const product = await Product.findById(id);
-  if (!product) {
+  const deletedProduct = await Product.findByIdAndDelete(id);
+  if (!deletedProduct) {
     throw new AppError(httpStatus.NOT_FOUND, "Product not found");
   }
-
-  const deletedProduct = await Product.findByIdAndDelete(id);
   return deletedProduct;
 };
 

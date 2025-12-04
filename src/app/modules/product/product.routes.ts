@@ -16,7 +16,7 @@ router.get(
   ProductController.getAllProducts
 );
 router.get(
-  "/:id",
+  "/singleProduct/:id",
   validateToken(Role.VENDOR, Role.ADMIN),
   ProductController.getSingleProduct
 );

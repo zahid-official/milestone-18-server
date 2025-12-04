@@ -9,6 +9,7 @@ import Order from "./order.model";
 import Payment from "../payment/payment.model";
 import stripe from "../../config/stripe";
 import envVars from "../../config/env";
+import { OrderStatus } from "./order.interface";
 
 // Create order and deduct product stock
 const createOrder = async (payload: IOrder, userId: string) => {
@@ -135,9 +136,73 @@ const createOrder = async (payload: IOrder, userId: string) => {
   }
 };
 
+// Cancel order and restock product
+const cancelOrder = async (orderId: string, userId: string) => {
+  const session = await mongoose.startSession();
+
+  try {
+    return await session.withTransaction(async () => {
+      // Find order
+      const order = await Order.findById(orderId).session(session);
+      if (!order) {
+        throw new AppError(httpStatus.NOT_FOUND, "Order not found");
+      }
+
+      // Ensure user owns the order
+      if (order.userId.toString() !== userId) {
+        throw new AppError(
+          httpStatus.FORBIDDEN,
+          "You are not authorized to cancel this order"
+        );
+      }
+
+      // Prevent canceling paid or already canceled orders
+      if (order.paymentStatus === PaymentStatus.PAID) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "Cannot cancel a paid order"
+        );
+      }
+      if (order.orderStatus === OrderStatus.CANCELLED) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Order already cancelled");
+      }
+
+      // Restock product
+      const product = await Product.findById(order.productId).session(session);
+      if (product) {
+        product.stock += order.quantity;
+        await product.save({ session });
+      }
+
+      // Update order & payment status
+      order.orderStatus = OrderStatus.CANCELLED;
+      order.paymentStatus = PaymentStatus.FAILED;
+      await order.save({ session });
+
+      if (order.paymentId) {
+        await Payment.findByIdAndUpdate(
+          order.paymentId,
+          { paymentStatus: PaymentStatus.FAILED },
+          { session }
+        );
+      }
+
+      return order;
+    });
+  } catch (error: any) {
+    throw new AppError(
+      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
+      error.message || "Failed to cancel order"
+    );
+  } finally {
+    await session.endSession();
+  }
+};
+
 // Order service object
 const OrderService = {
   createOrder,
+  cancelOrder,
 };
 
 export default OrderService;

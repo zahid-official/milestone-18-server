@@ -16,6 +16,13 @@ router.post(
   OrderController.createOrder
 );
 
+// Patch routes
+router.patch(
+  "/:id/cancel",
+  validateToken(Role.CUSTOMER),
+  OrderController.cancelOrder
+);
+
 // Export order routes
 const OrderRoutes = router;
 export default OrderRoutes;

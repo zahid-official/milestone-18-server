@@ -20,9 +20,25 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Cancel order
+const cancelOrder = catchAsync(async (req: Request, res: Response) => {
+  const orderId = req?.params?.id;
+  const userId = req?.decodedToken?.userId;
+
+  const result = await OrderService.cancelOrder(orderId, userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Order cancelled successfully",
+    data: result,
+  });
+});
+
 // Order controller object
 const OrderController = {
   createOrder,
+  cancelOrder,
 };
 
 export default OrderController;
