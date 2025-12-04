@@ -10,6 +10,47 @@ import Payment from "../payment/payment.model";
 import stripe from "../../config/stripe";
 import envVars from "../../config/env";
 import { OrderStatus } from "./order.interface";
+import QueryBuilder from "../../utils/queryBuilder";
+
+// Get all orders for a customer
+const getAllOrdersByUser = async (
+  userId: string,
+  query: Record<string, string>
+) => {
+  const searchFields = ["orderStatus", "paymentStatus"];
+
+  const queryBuilder = new QueryBuilder<IOrder>(
+    Order.find({ userId }).populate([
+      {
+        path: "productId",
+        select: ["title", "price", "category", "thumbnail"],
+      },
+      {
+        path: "paymentId",
+        select: ["transactionId"],
+      },
+      {
+        path: "userId",
+        select: ["email", "role", "status"],
+      },
+    ]),
+    query
+  );
+  const orders = await queryBuilder
+    .sort()
+    .filter()
+    .paginate()
+    .fieldSelect()
+    .search(searchFields)
+    .build();
+
+  const meta = await queryBuilder.meta();
+
+  return {
+    data: orders,
+    meta,
+  };
+};
 
 // Create order and deduct product stock
 const createOrder = async (payload: IOrder, userId: string) => {
@@ -201,6 +242,7 @@ const cancelOrder = async (orderId: string, userId: string) => {
 
 // Order service object
 const OrderService = {
+  getAllOrdersByUser,
   createOrder,
   cancelOrder,
 };

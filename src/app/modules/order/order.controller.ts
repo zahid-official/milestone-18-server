@@ -4,6 +4,24 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import OrderService from "./order.service";
 
+// Get all orders (for the logged-in customer)
+const getAllOrdersByUser = catchAsync(async (req: Request, res: Response) => {
+  const userId = req?.decodedToken?.userId;
+  const query = req?.query;
+  const result = await OrderService.getAllOrdersByUser(
+    userId,
+    query as Record<string, string>
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All orders retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 // Create order
 const createOrder = catchAsync(async (req: Request, res: Response) => {
   const body = req?.body;
@@ -37,6 +55,7 @@ const cancelOrder = catchAsync(async (req: Request, res: Response) => {
 
 // Order controller object
 const OrderController = {
+  getAllOrdersByUser,
   createOrder,
   cancelOrder,
 };
