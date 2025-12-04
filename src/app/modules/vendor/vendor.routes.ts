@@ -8,6 +8,21 @@ import { Role } from "../user/user.interface";
 // Initialize router
 const router = Router();
 
+// Get routes
+router.get("/", validateToken(Role.ADMIN), VendorController.getAllVendors);
+router.get(
+  "/singleVendor/:id",
+  validateToken(Role.ADMIN),
+  VendorController.getSingleVendor
+);
+
+// Delete routes
+router.delete(
+  "/:id",
+  validateToken(Role.ADMIN),
+  VendorController.deleteVendor
+);
+
 // Post routes
 router.post(
   "/create",

@@ -22,6 +22,11 @@ const loadEnvs = (): EnvConfig => {
     "CLOUDINARY_CLOUD_NAME",
     "CLOUDINARY_API_KEY",
     "CLOUDINARY_API_SECRET",
+
+    "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET_KEY",
+    "STRIPE_SUCCESS_FRONTEND_URL",
+    "STRIPE_CANCELED_FRONTEND_URL",
   ];
 
   // Check missing envs
@@ -65,6 +70,12 @@ const loadEnvs = (): EnvConfig => {
       CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
       API_KEY: process.env.CLOUDINARY_API_KEY as string,
       API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+    },
+    STRIPE: {
+      SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+      WEBHOOK_SECRET_KEY: process.env.STRIPE_WEBHOOK_SECRET_KEY as string,
+      SUCCESS_FRONTEND_URL: process.env.STRIPE_SUCCESS_FRONTEND_URL as string,
+      CANCELED_FRONTEND_URL: process.env.STRIPE_CANCELED_FRONTEND_URL as string,
     },
   };
 };

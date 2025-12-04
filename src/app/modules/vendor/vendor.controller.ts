@@ -4,6 +4,51 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import VendorService from "./vendor.service";
 
+// Get all vendors
+const getAllVendors = catchAsync(async (req: Request, res: Response) => {
+  const query = req?.query;
+  const result = await VendorService.getAllVendors(
+    query as Record<string, string>
+  );
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All vendors retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
+// Get single vendor
+const getSingleVendor = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await VendorService.getSingleVendor(id);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Vendor retrieved successfully",
+    data: result,
+  });
+});
+
+// Delete vendor
+const deleteVendor = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await VendorService.deleteVendor(id);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Vendor deleted successfully",
+    data: result,
+  });
+});
+
 // Create vendor
 const createVendor = catchAsync(async (req: Request, res: Response) => {
   const { password, ...body } = req?.body || {};
@@ -20,6 +65,9 @@ const createVendor = catchAsync(async (req: Request, res: Response) => {
 
 // Vendor controller object
 const VendorController = {
+  getAllVendors,
+  getSingleVendor,
+  deleteVendor,
   createVendor,
 };
 

@@ -8,9 +8,17 @@ import "./app/config/passport";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import notFoundHandler from "./app/middlewares/notFoundHandler";
 import ModuleRouter from "./app/routes";
+import PaymentController from "./app/modules/payment/payment.controller";
 
 // Express application
 const app: Application = express();
+
+// Stripe webhook route
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  PaymentController.stripeWebhook
+);
 
 // Middlewares
 app.use(
