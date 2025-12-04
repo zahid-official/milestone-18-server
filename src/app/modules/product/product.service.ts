@@ -56,10 +56,22 @@ const updateProduct = async (id: string, payload: Partial<IProduct>) => {
   return updatedProduct;
 };
 
+// Delete product
+const deleteProduct = async (id: string) => {
+  const product = await Product.findById(id);
+  if (!product) {
+    throw new AppError(httpStatus.NOT_FOUND, "Product not found");
+  }
+
+  const deletedProduct = await Product.findByIdAndDelete(id);
+  return deletedProduct;
+};
+
 // Product service object
 const ProductService = {
   createProduct,
   updateProduct,
+  deleteProduct,
 };
 
 export default ProductService;

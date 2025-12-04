@@ -27,6 +27,13 @@ router.patch(
   ProductController.updateProduct
 );
 
+// Delete routes
+router.delete(
+  "/:id",
+  validateToken(Role.VENDOR),
+  ProductController.deleteProduct
+);
+
 // Export product routes
 const ProductRoutes = router;
 export default ProductRoutes;
