@@ -19,9 +19,28 @@ const createProduct = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Update product
+const updateProduct = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const payload: Partial<IProduct> = { ...req.body };
+  if (req.file?.path) {
+    payload.thumbnail = req.file.path;
+  }
+
+  const result = await ProductService.updateProduct(id, payload);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Product updated successfully",
+    data: result,
+  });
+});
+
 // Product controller object
 const ProductController = {
   createProduct,
+  updateProduct,
 };
 
 export default ProductController;

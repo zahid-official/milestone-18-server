@@ -1,10 +1,10 @@
 import { Router } from "express";
+import multerUpload from "../../config/multer";
 import validateSchema from "../../middlewares/validateSchema";
-import ProductController from "./product.controller";
-import createProductSchema from "./product.validation";
 import validateToken from "../../middlewares/validateToken";
 import { Role } from "../user/user.interface";
-import multerUpload from "../../config/multer";
+import ProductController from "./product.controller";
+import { createProductSchema, updateProductSchema } from "./product.validation";
 
 // Initialize router
 const router = Router();
@@ -16,6 +16,15 @@ router.post(
   validateToken(Role.VENDOR),
   validateSchema(createProductSchema),
   ProductController.createProduct
+);
+
+// Patch routes
+router.patch(
+  "/:id",
+  multerUpload.single("file"),
+  validateToken(Role.VENDOR),
+  validateSchema(updateProductSchema),
+  ProductController.updateProduct
 );
 
 // Export product routes
