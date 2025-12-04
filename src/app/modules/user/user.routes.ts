@@ -11,6 +11,7 @@ const router = Router();
 
 // Get routes
 router.get("/", validateToken(Role.ADMIN), UserController.getAllUsers);
+router.get("/deletedUsers", validateToken(Role.ADMIN), UserController.getAllDeletedUsers);
 router.get(
   "/singleUser/:id",
   validateToken(Role.ADMIN),

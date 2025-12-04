@@ -35,6 +35,31 @@ const getAllUsers = async (query: Record<string, string>) => {
   };
 };
 
+// Get all deleted users
+const getAllDeletedUsers = async (query: Record<string, string>) => {
+  const searchFields = ["role", "email"];
+
+  const queryBuilder = new QueryBuilder<IUser>(
+    User.find({ isDeleted: true }),
+    query
+  );
+  const users = await queryBuilder
+    .sort()
+    .filter()
+    .paginate()
+    .fieldSelect()
+    .search(searchFields)
+    .build()
+    .select("-password");
+
+  const meta = await queryBuilder.meta();
+
+  return {
+    data: users,
+    meta,
+  };
+};
+
 // Get single user
 const getSingleUser = async (id: string) => {
   const user = await User.findById(id)
@@ -120,6 +145,7 @@ const updateProfileInfo = async (
 // User service object
 const UserService = {
   getAllUsers,
+  getAllDeletedUsers,
   getSingleUser,
   getProfileInfo,
   updateProfileInfo,

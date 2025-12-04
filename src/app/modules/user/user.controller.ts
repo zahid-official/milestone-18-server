@@ -19,6 +19,23 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Get all deleted users
+const getAllDeletedUsers = catchAsync(async (req: Request, res: Response) => {
+  const query = req?.query;
+  const result = await UserService.getAllDeletedUsers(
+    query as Record<string, string>
+  );
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All deleted users retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 // Get single user
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   const id = req?.params?.id;
@@ -67,6 +84,7 @@ const updateProfileInfo = catchAsync(async (req: Request, res: Response) => {
 // User controller object
 const UserController = {
   getAllUsers,
+  getAllDeletedUsers,
   getSingleUser,
   getProfileInfo,
   updateProfileInfo,
