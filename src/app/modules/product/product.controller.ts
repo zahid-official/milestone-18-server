@@ -37,7 +37,8 @@ const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
 // Create product
 const createProduct = catchAsync(async (req: Request, res: Response) => {
   const payload: IProduct = { ...req.body, thumbnail: req.file?.path };
-  const result = await ProductService.createProduct(payload);
+  const vendorUserId = req?.decodedToken?.userId;
+  const result = await ProductService.createProduct(payload, vendorUserId);
 
   // Send response
   sendResponse(res, {
@@ -50,13 +51,18 @@ const createProduct = catchAsync(async (req: Request, res: Response) => {
 
 // Update product
 const updateProduct = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const productId = req.params.id;
+  const vendorUserId = req?.decodedToken?.userId;
   const payload: Partial<IProduct> = { ...req.body };
   if (req.file?.path) {
     payload.thumbnail = req.file.path;
   }
 
-  const result = await ProductService.updateProduct(id, payload);
+  const result = await ProductService.updateProduct(
+    productId,
+    vendorUserId,
+    payload
+  );
 
   sendResponse(res, {
     success: true,
@@ -68,8 +74,9 @@ const updateProduct = catchAsync(async (req: Request, res: Response) => {
 
 // Delete product
 const deleteProduct = catchAsync(async (req: Request, res: Response) => {
-  const id = req?.params?.id;
-  const result = await ProductService.deleteProduct(id);
+  const productId = req?.params?.id;
+  const vendorUserId = req?.decodedToken?.userId;
+  const result = await ProductService.deleteProduct(productId, vendorUserId);
 
   sendResponse(res, {
     success: true,

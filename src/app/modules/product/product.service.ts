@@ -3,6 +3,7 @@ import { httpStatus } from "../../import";
 import { IProduct } from "./product.interface";
 import Product from "./product.model";
 import QueryBuilder from "../../utils/queryBuilder";
+import Vendor from "../vendor/vendor.model";
 
 // Get all products
 const getAllProducts = async (query: Record<string, string>) => {
@@ -35,11 +36,21 @@ const getSingleProduct = async (id: string) => {
 };
 
 // Create product
-const createProduct = async (payload: IProduct) => {
+const createProduct = async (payload: IProduct, vendorUserId: string) => {
+  // Find vendor by userId
+  const vendor = await Vendor.findOne({ userId: vendorUserId });
+  if (!vendor) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Vendor not found or unauthorized"
+    );
+  }
+
   // Check if product already exists in category
   const isProductExists = await Product.findOne({
     title: payload?.title,
     category: payload?.category,
+    vendorId: vendor._id,
   });
 
   if (isProductExists) {
@@ -49,14 +60,30 @@ const createProduct = async (payload: IProduct) => {
     );
   }
 
-  const result = await Product.create(payload);
+  const result = await Product.create({ ...payload, vendorId: vendor._id });
   return result;
 };
 
 // Update product
-const updateProduct = async (id: string, payload: Partial<IProduct>) => {
-  // Ensure product exists
-  const existingProduct = await Product.findById(id);
+const updateProduct = async (
+  productId: string,
+  vendorUserId: string,
+  payload: Partial<IProduct>
+) => {
+  // Find vendor by userId
+  const vendor = await Vendor.findOne({ userId: vendorUserId });
+  if (!vendor) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Vendor not found or unauthorized"
+    );
+  }
+
+  // Ensure product exists and belongs to vendor
+  const existingProduct = await Product.findOne({
+    _id: productId,
+    vendorId: vendor._id,
+  });
   if (!existingProduct) {
     throw new AppError(httpStatus.NOT_FOUND, "Product not found");
   }
@@ -67,7 +94,8 @@ const updateProduct = async (id: string, payload: Partial<IProduct>) => {
 
   if (payload.title || payload.category) {
     const duplicate = await Product.findOne({
-      _id: { $ne: id },
+      _id: { $ne: productId },
+      vendorId: vendor._id,
       title: titleToCheck,
       category: categoryToCheck,
     });
@@ -79,17 +107,33 @@ const updateProduct = async (id: string, payload: Partial<IProduct>) => {
     }
   }
 
-  const updatedProduct = await Product.findByIdAndUpdate(id, payload, {
-    new: true,
-    runValidators: true,
-  });
+  const updatedProduct = await Product.findOneAndUpdate(
+    { _id: productId, vendorId: vendor._id },
+    payload,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   return updatedProduct;
 };
 
 // Delete product
-const deleteProduct = async (id: string) => {
-  const deletedProduct = await Product.findByIdAndDelete(id);
+const deleteProduct = async (productId: string, vendorUserId: string) => {
+  // Find vendor by userId
+  const vendor = await Vendor.findOne({ userId: vendorUserId });
+  if (!vendor) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Vendor not found or unauthorized"
+    );
+  }
+
+  const deletedProduct = await Product.findOneAndDelete({
+    _id: productId,
+    vendorId: vendor._id,
+  });
   if (!deletedProduct) {
     throw new AppError(httpStatus.NOT_FOUND, "Product not found");
   }

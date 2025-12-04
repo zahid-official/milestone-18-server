@@ -16,6 +16,7 @@ const productSpecificationsSchema = new Schema(
 // Mongoose schema for product model
 const productSchema = new Schema<IProduct>(
   {
+    vendorId: { type: Schema.Types.ObjectId, ref: "Vendor", required: true },
     title: { type: String, required: true },
     price: { type: Number, required: true },
     stock: { type: Number, required: true },

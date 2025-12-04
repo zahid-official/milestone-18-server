@@ -9,6 +9,7 @@ import createOrderSchema from "./order.validation";
 const router = Router();
 
 // Get routes
+router.get("/", validateToken(Role.VENDOR), OrderController.getAllOrders);
 router.get("/userOrders", validateToken(Role.CUSTOMER), OrderController.getAllOrdersByUser);
 
 // Post routes

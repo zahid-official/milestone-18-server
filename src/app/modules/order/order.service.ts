@@ -11,6 +11,59 @@ import stripe from "../../config/stripe";
 import envVars from "../../config/env";
 import { OrderStatus } from "./order.interface";
 import QueryBuilder from "../../utils/queryBuilder";
+import Vendor from "../vendor/vendor.model";
+
+// Get all orders (no user filter)
+const getAllOrders = async (
+  vendorUserId: string,
+  query: Record<string, string>
+) => {
+  const searchFields = ["orderStatus", "paymentStatus"];
+
+  // Find vendor by the authenticated user's id
+  const vendor = await Vendor.findOne({ userId: vendorUserId });
+  if (!vendor) {
+    throw new AppError(httpStatus.FORBIDDEN, "Vendor not found or unauthorized");
+  }
+
+  // Collect product ids that belong to this vendor
+  const vendorProductIds = await Product.find({
+    vendorId: vendor._id,
+  }).distinct("_id");
+
+  const queryBuilder = new QueryBuilder<IOrder>(
+    Order.find({ productId: { $in: vendorProductIds } }).populate([
+      {
+        path: "productId",
+        select: ["title", "price", "category", "thumbnail"],
+      },
+      {
+        path: "paymentId",
+        select: ["paymentStatus", "transactionId", "amount"],
+      },
+      {
+        path: "userId",
+        select: ["email", "role", "status"],
+      },
+    ]),
+    query
+  );
+
+  const orders = await queryBuilder
+    .sort()
+    .filter()
+    .paginate()
+    .fieldSelect()
+    .search(searchFields)
+    .build();
+
+  const meta = await queryBuilder.meta();
+
+  return {
+    data: orders,
+    meta,
+  };
+};
 
 // Get all orders for a customer
 const getAllOrdersByUser = async (
@@ -242,6 +295,7 @@ const cancelOrder = async (orderId: string, userId: string) => {
 
 // Order service object
 const OrderService = {
+  getAllOrders,
   getAllOrdersByUser,
   createOrder,
   cancelOrder,
