@@ -21,6 +21,19 @@ const getAllProducts = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Get single product
+const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await ProductService.getSingleProduct(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Product retrieved successfully",
+    data: result,
+  });
+});
+
 // Create product
 const createProduct = catchAsync(async (req: Request, res: Response) => {
   const payload: IProduct = { ...req.body, thumbnail: req.file?.path };
@@ -69,6 +82,7 @@ const deleteProduct = catchAsync(async (req: Request, res: Response) => {
 // Product controller object
 const ProductController = {
   getAllProducts,
+  getSingleProduct,
   createProduct,
   updateProduct,
   deleteProduct,

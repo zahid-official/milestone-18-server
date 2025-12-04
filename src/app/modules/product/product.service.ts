@@ -25,6 +25,15 @@ const getAllProducts = async (query: Record<string, string>) => {
   };
 };
 
+// Get single product
+const getSingleProduct = async (id: string) => {
+  const product = await Product.findById(id);
+  if (!product) {
+    throw new AppError(httpStatus.NOT_FOUND, "Product not found");
+  }
+  return product;
+};
+
 // Create product
 const createProduct = async (payload: IProduct) => {
   // Check if product already exists in category
@@ -92,6 +101,7 @@ const deleteProduct = async (id: string) => {
 // Product service object
 const ProductService = {
   getAllProducts,
+  getSingleProduct,
   createProduct,
   updateProduct,
   deleteProduct,
