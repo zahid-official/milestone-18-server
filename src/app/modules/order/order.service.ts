@@ -323,6 +323,14 @@ const updateOrderStatusToInProgress = async (
     );
   }
 
+  // Prevent duplicate in-progress transition
+  if (order.orderStatus === OrderStatus.IN_PROCESSING) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Order is already in processing"
+    );
+  }
+
   // Only allow transition when payment is paid and order is confirmed
   if (
     order.paymentStatus !== PaymentStatus.PAID ||
@@ -339,6 +347,52 @@ const updateOrderStatusToInProgress = async (
   return order;
 };
 
+// Update order status to delivered (vendor scoped)
+const updateOrderStatusToDelivered = async (
+  orderId: string,
+  vendorUserId: string
+) => {
+  // Resolve vendor
+  const vendor = await Vendor.findOne({ userId: vendorUserId });
+  if (!vendor) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Vendor not found or unauthorized"
+    );
+  }
+
+  // Load order with product to verify ownership
+  const order = await Order.findById(orderId).populate("productId");
+  if (!order) {
+    throw new AppError(httpStatus.NOT_FOUND, "Order not found");
+  }
+
+  const product: any = order.productId;
+  if (!product || product.vendorId?.toString() !== vendor._id.toString()) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You are not authorized to update this order"
+    );
+  }
+
+  // Prevent duplicate delivered transition
+  if (order.orderStatus === OrderStatus.DELIVERED) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Order is already delivered");
+  }
+
+  // Only allow transition when currently in processing
+  if (order.orderStatus !== OrderStatus.IN_PROCESSING) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Order must be in processing before it can be delivered"
+    );
+  }
+
+  order.orderStatus = OrderStatus.DELIVERED;
+  await order.save();
+  return order;
+};
+
 // Order service object
 const OrderService = {
   getAllOrders,
@@ -346,6 +400,7 @@ const OrderService = {
   createOrder,
   cancelOrder,
   updateOrderStatusToInProgress,
+  updateOrderStatusToDelivered,
 };
 
 export default OrderService;

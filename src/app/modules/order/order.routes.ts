@@ -31,6 +31,11 @@ router.patch(
   OrderController.updateOrderStatusToInProgress
 );
 router.patch(
+  "/:id/delivered",
+  validateToken(Role.VENDOR),
+  OrderController.updateOrderStatusToDelivered
+);
+router.patch(
   "/:id/cancel",
   validateToken(Role.CUSTOMER),
   OrderController.cancelOrder

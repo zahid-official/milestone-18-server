@@ -91,6 +91,26 @@ const updateOrderStatusToInProgress = catchAsync(
   }
 );
 
+// Mark order delivered (vendor only)
+const updateOrderStatusToDelivered = catchAsync(
+  async (req: Request, res: Response) => {
+    const orderId = req?.params?.id;
+    const vendorUserId = req?.decodedToken?.userId;
+
+    const result = await OrderService.updateOrderStatusToDelivered(
+      orderId,
+      vendorUserId
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Order marked as delivered",
+      data: result,
+    });
+  }
+);
+
 // Order controller object
 const OrderController = {
   getAllOrders,
@@ -98,6 +118,7 @@ const OrderController = {
   createOrder,
   cancelOrder,
   updateOrderStatusToInProgress,
+  updateOrderStatusToDelivered,
 };
 
 export default OrderController;
