@@ -9,6 +9,9 @@ import { createProductSchema, updateProductSchema } from "./product.validation";
 // Initialize router
 const router = Router();
 
+// Get routes
+router.get("/", ProductController.getAllProducts);
+
 // Post routes
 router.post(
   "/create",

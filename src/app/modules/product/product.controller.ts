@@ -5,6 +5,22 @@ import sendResponse from "../../utils/sendResponse";
 import ProductService from "./product.service";
 import { IProduct } from "./product.interface";
 
+// Get all products
+const getAllProducts = catchAsync(async (req: Request, res: Response) => {
+  const query = req?.query;
+  const result = await ProductService.getAllProducts(
+    query as Record<string, string>
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All products retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 // Create product
 const createProduct = catchAsync(async (req: Request, res: Response) => {
   const payload: IProduct = { ...req.body, thumbnail: req.file?.path };
@@ -52,6 +68,7 @@ const deleteProduct = catchAsync(async (req: Request, res: Response) => {
 
 // Product controller object
 const ProductController = {
+  getAllProducts,
   createProduct,
   updateProduct,
   deleteProduct,

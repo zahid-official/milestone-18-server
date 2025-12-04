@@ -2,6 +2,28 @@ import AppError from "../../errors/AppError";
 import { httpStatus } from "../../import";
 import { IProduct } from "./product.interface";
 import Product from "./product.model";
+import QueryBuilder from "../../utils/queryBuilder";
+
+// Get all products
+const getAllProducts = async (query: Record<string, string>) => {
+  const searchFields = ["title", "category"];
+
+  const queryBuilder = new QueryBuilder<IProduct>(Product.find(), query);
+  const products = await queryBuilder
+    .sort()
+    .filter()
+    .paginate()
+    .fieldSelect()
+    .search(searchFields)
+    .build();
+
+  const meta = await queryBuilder.meta();
+
+  return {
+    data: products,
+    meta,
+  };
+};
 
 // Create product
 const createProduct = async (payload: IProduct) => {
@@ -69,6 +91,7 @@ const deleteProduct = async (id: string) => {
 
 // Product service object
 const ProductService = {
+  getAllProducts,
   createProduct,
   updateProduct,
   deleteProduct,
