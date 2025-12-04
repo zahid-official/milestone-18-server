@@ -21,6 +21,20 @@ const getAllVendors = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Get single vendor
+const getSingleVendor = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await VendorService.getSingleVendor(id);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Vendor retrieved successfully",
+    data: result,
+  });
+});
+
 // Create vendor
 const createVendor = catchAsync(async (req: Request, res: Response) => {
   const { password, ...body } = req?.body || {};
@@ -38,6 +52,7 @@ const createVendor = catchAsync(async (req: Request, res: Response) => {
 // Vendor controller object
 const VendorController = {
   getAllVendors,
+  getSingleVendor,
   createVendor,
 };
 

@@ -10,6 +10,11 @@ const router = Router();
 
 // Get routes
 router.get("/", validateToken(Role.ADMIN), VendorController.getAllVendors);
+router.get(
+  "/singleVendor/:id",
+  validateToken(Role.ADMIN),
+  VendorController.getSingleVendor
+);
 
 // Post routes
 router.post(

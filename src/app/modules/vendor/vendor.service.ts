@@ -33,6 +33,15 @@ const getAllVendors = async (query: Record<string, string>) => {
   };
 };
 
+// Get single vendor
+const getSingleVendor = async (id: string) => {
+  const vendor = await Vendor.findById(id);
+  if (!vendor) {
+    throw new AppError(httpStatus.NOT_FOUND, "Vendor not found");
+  }
+  return vendor;
+};
+
 // Create vendor
 const createVendor = async (payload: IVendor, password: string) => {
   const session = await mongoose.startSession();
@@ -78,6 +87,7 @@ const createVendor = async (payload: IVendor, password: string) => {
 // Vendor service object
 const VendorService = {
   getAllVendors,
+  getSingleVendor,
   createVendor,
 };
 
