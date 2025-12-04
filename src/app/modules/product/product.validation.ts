@@ -96,18 +96,6 @@ const createProductSchema = z.object({
   // Thumbnail
   thumbnail: z.string({ error: "Thumbnail must be string" }).trim().optional(),
 
-  // Discount
-  discount: z
-    .number({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Discount is required"
-          : "Discount must be a number",
-    })
-    .min(0, { error: "Discount cannot be negative." })
-    .max(100, { error: "Discount cannot exceed 100." })
-    .optional(),
-
   // Description
   description: z
     .string({
@@ -120,8 +108,8 @@ const createProductSchema = z.object({
     .trim()
     .optional(),
 
-  // Product details
-  productDetails: z
+  // Product Overview
+  productOverview: z
     .string({
       error: (issue) =>
         issue.input === undefined
@@ -136,4 +124,7 @@ const createProductSchema = z.object({
   specifications: productSpecificationsSchema.optional(),
 });
 
-export default createProductSchema;
+// Zod schema for updating a product (all fields optional)
+const updateProductSchema = createProductSchema.partial();
+
+export { createProductSchema, updateProductSchema };

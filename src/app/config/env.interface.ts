@@ -20,6 +20,12 @@ interface EnvConfig {
     API_KEY: string;
     API_SECRET: string;
   };
+  STRIPE: {
+    SECRET_KEY: string;
+    WEBHOOK_SECRET_KEY: string;
+    SUCCESS_FRONTEND_URL: string;
+    CANCELED_FRONTEND_URL: string;
+  };
 }
 
 export default EnvConfig;

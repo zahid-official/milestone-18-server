@@ -6,6 +6,26 @@ import { clearCookies, setCookies } from "../../utils/cookies";
 import sendResponse from "../../utils/sendResponse";
 import passport from "passport";
 import getTokens from "../../utils/getTokens";
+import AuthService from "./auth.service";
+
+// Change password
+const changePassword = catchAsync(async (req: Request, res: Response) => {
+  const userId = req?.decodedToken?.userId;
+  const { oldPassword, newPassword } = req?.body || {};
+
+  const result = await AuthService.changePassword(
+    userId,
+    oldPassword,
+    newPassword
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Password changed successfully",
+    data: result,
+  });
+});
 
 // Credentials login
 const credentialsLogin = catchAsync(
@@ -39,26 +59,24 @@ const credentialsLogin = catchAsync(
 );
 
 // Logout user
-const logout = catchAsync(
-  async (req: Request, res: Response) => {
-    // Clear cookies
-    clearCookies(res);
+const logout = catchAsync(async (req: Request, res: Response) => {
+  // Clear cookies
+  clearCookies(res);
 
-    // Send response
-    sendResponse(res, {
-      success: true,
-      statusCode: httpStatus.OK,
-      message: "User logged out successfully",
-      data: null,
-    });
-  }
-);
-
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User logged out successfully",
+    data: null,
+  });
+});
 
 // Auth controller object
 const AuthController = {
   credentialsLogin,
   logout,
+  changePassword,
 };
 
 export default AuthController;

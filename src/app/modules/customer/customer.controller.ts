@@ -4,6 +4,51 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import CustomerService from "./customer.service";
 
+// Get all customers
+const getAllCustomers = catchAsync(async (req: Request, res: Response) => {
+  const query = req?.query;
+  const result = await CustomerService.getAllCustomers(
+    query as Record<string, string>
+  );
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All customers retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
+// Get single customer
+const getSingleCustomer = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await CustomerService.getSingleCustomer(id);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Customer retrieved successfully",
+    data: result,
+  });
+});
+
+// Delete customer
+const deleteCustomer = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await CustomerService.deleteCustomer(id);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Customer deleted successfully",
+    data: result,
+  });
+});
+
 // Create customer
 const createCustomer = catchAsync(async (req: Request, res: Response) => {
   const { password, ...body } = req?.body || {};
@@ -20,6 +65,9 @@ const createCustomer = catchAsync(async (req: Request, res: Response) => {
 
 // Customer controller object
 const CustomerController = {
+  getAllCustomers,
+  getSingleCustomer,
+  deleteCustomer,
   createCustomer,
 };
 
