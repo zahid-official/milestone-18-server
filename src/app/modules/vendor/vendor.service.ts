@@ -6,6 +6,32 @@ import mongoose from "mongoose";
 import envVars from "../../config/env";
 import AppError from "../../errors/AppError";
 import { bcryptjs, httpStatus } from "../../import";
+import QueryBuilder from "../../utils/queryBuilder";
+
+// Get all vendors
+const getAllVendors = async (query: Record<string, string>) => {
+  const searchFields = ["name", "email", "phone"];
+
+  // Build the query using QueryBuilder and fetch vendors
+  const queryBuilder = new QueryBuilder<IVendor>(
+    Vendor.find({ isDeleted: { $ne: true } }),
+    query
+  );
+  const vendors = await queryBuilder
+    .sort()
+    .filter()
+    .paginate()
+    .fieldSelect()
+    .search(searchFields)
+    .build();
+
+  const meta = await queryBuilder.meta();
+
+  return {
+    data: vendors,
+    meta,
+  };
+};
 
 // Create vendor
 const createVendor = async (payload: IVendor, password: string) => {
@@ -51,6 +77,7 @@ const createVendor = async (payload: IVendor, password: string) => {
 
 // Vendor service object
 const VendorService = {
+  getAllVendors,
   createVendor,
 };
 

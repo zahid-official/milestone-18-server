@@ -8,6 +8,9 @@ import { Role } from "../user/user.interface";
 // Initialize router
 const router = Router();
 
+// Get routes
+router.get("/", validateToken(Role.ADMIN), VendorController.getAllVendors);
+
 // Post routes
 router.post(
   "/create",

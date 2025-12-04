@@ -37,7 +37,9 @@ const getAllUsers = async (query: Record<string, string>) => {
 
 // Get single user
 const getSingleUser = async (id: string) => {
-  const user = await User.findById(id).select("-password");
+  const user = await User.findById(id)
+    .where({ isDeleted: { $ne: true } })
+    .select("-password");
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
