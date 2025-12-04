@@ -40,6 +40,36 @@ const getAllOrdersByUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Get single order
+const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
+  const orderId = req?.params?.id;
+  const vendorUserId = req?.decodedToken?.userId;
+  const result = await OrderService.getSingleOrder(orderId, vendorUserId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Order retrieved successfully",
+    data: result,
+  });
+});
+
+// Get single order (for the logged-in customer)
+const getSingleOrderForUser = catchAsync(
+  async (req: Request, res: Response) => {
+    const orderId = req?.params?.id;
+    const userId = req?.decodedToken?.userId;
+    const result = await OrderService.getSingleOrderForUser(orderId, userId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Order retrieved successfully",
+      data: result,
+    });
+  }
+);
+
 // Create order
 const createOrder = catchAsync(async (req: Request, res: Response) => {
   const body = req?.body;
@@ -115,6 +145,8 @@ const updateOrderStatusToDelivered = catchAsync(
 const OrderController = {
   getAllOrders,
   getAllOrdersByUser,
+  getSingleOrder,
+  getSingleOrderForUser,
   createOrder,
   cancelOrder,
   updateOrderStatusToInProgress,

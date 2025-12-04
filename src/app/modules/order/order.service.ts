@@ -107,6 +107,55 @@ const getAllOrdersByUser = async (
   };
 };
 
+// Get single order
+const getSingleOrder = async (orderId: string, vendorUserId: string) => {
+  const vendor = await Vendor.findOne({ userId: vendorUserId });
+  if (!vendor) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Vendor not found or unauthorized"
+    );
+  }
+
+  const order = await Order.findById(orderId).populate([
+    {
+      path: "productId",
+      select: ["title", "price", "category", "thumbnail", "vendorId"],
+    },
+    { path: "paymentId", select: ["paymentStatus", "transactionId", "amount"] },
+    { path: "userId", select: ["email", "role", "status"] },
+  ]);
+
+  if (!order) {
+    throw new AppError(httpStatus.NOT_FOUND, "Order not found");
+  }
+
+  const product: any = order.productId;
+  if (!product || product.vendorId?.toString() !== vendor._id.toString()) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You are not authorized to view this order"
+    );
+  }
+
+  return order;
+};
+
+// Get single order for customer
+const getSingleOrderForUser = async (orderId: string, userId: string) => {
+  const order = await Order.findOne({ _id: orderId, userId }).populate([
+    { path: "productId", select: ["title", "price", "category", "thumbnail"] },
+    { path: "paymentId", select: ["paymentStatus", "transactionId", "amount"] },
+    { path: "userId", select: ["email", "role", "status"] },
+  ]);
+
+  if (!order) {
+    throw new AppError(httpStatus.NOT_FOUND, "Order not found");
+  }
+
+  return order;
+};
+
 // Create order and deduct product stock
 const createOrder = async (payload: IOrder, userId: string) => {
   const session = await mongoose.startSession();
@@ -397,6 +446,8 @@ const updateOrderStatusToDelivered = async (
 const OrderService = {
   getAllOrders,
   getAllOrdersByUser,
+  getSingleOrder,
+  getSingleOrderForUser,
   createOrder,
   cancelOrder,
   updateOrderStatusToInProgress,

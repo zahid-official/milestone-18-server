@@ -15,6 +15,16 @@ router.get(
   validateToken(Role.CUSTOMER),
   OrderController.getAllOrdersByUser
 );
+router.get(
+  "/singleOrder/:id",
+  validateToken(Role.VENDOR),
+  OrderController.getSingleOrder
+);
+router.get(
+  "/userOrder/:id",
+  validateToken(Role.CUSTOMER),
+  OrderController.getSingleOrderForUser
+);
 
 // Post routes
 router.post(
