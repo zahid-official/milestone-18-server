@@ -9,10 +9,11 @@ import { Role } from "../user/user.interface";
 const router = Router();
 
 // Get routes
+router.get("/", validateToken(Role.ADMIN), AdminController.getAllAdmins);
 router.get(
-  "/",
+  "/singleAdmin/:id",
   validateToken(Role.ADMIN),
-  AdminController.getAllAdmins
+  AdminController.getSingleAdmin
 );
 
 // Post routes

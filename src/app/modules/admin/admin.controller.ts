@@ -21,6 +21,20 @@ const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Get single admin
+const getSingleAdmin = catchAsync(async (req: Request, res: Response) => {
+  const id = req?.params?.id;
+  const result = await AdminService.getSingleAdmin(id);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Admin retrieved successfully",
+    data: result,
+  });
+});
+
 // Create admin
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
   const { password, ...body } = req?.body || {};
@@ -38,6 +52,7 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
 // Admin controller object
 const AdminController = {
   getAllAdmins,
+  getSingleAdmin,
   createAdmin,
 };
 

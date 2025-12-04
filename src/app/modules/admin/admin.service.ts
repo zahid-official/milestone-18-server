@@ -35,6 +35,15 @@ const getAllAdmins = async (query: Record<string, string>) => {
   };
 };
 
+// Get single admin
+const getSingleAdmin = async (id: string) => {
+  const admin = await Admin.findById(id);
+  if (!admin) {
+    throw new AppError(httpStatus.NOT_FOUND, "Admin not found");
+  }
+  return admin;
+};
+
 // Create admin
 const createAdmin = async (payload: IAdmin, password: string) => {
   const session = await mongoose.startSession();
@@ -73,6 +82,7 @@ const createAdmin = async (payload: IAdmin, password: string) => {
 // Admin service object
 const AdminService = {
   getAllAdmins,
+  getSingleAdmin,
   createAdmin,
 };
 

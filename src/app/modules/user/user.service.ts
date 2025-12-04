@@ -1,3 +1,5 @@
+import AppError from "../../errors/AppError";
+import { httpStatus } from "../../import";
 import QueryBuilder from "../../utils/queryBuilder";
 import Admin from "../admin/admin.model";
 import Customer from "../customer/customer.model";
@@ -11,7 +13,10 @@ const getAllUsers = async (query: Record<string, string>) => {
   const searchFields = ["role", "email"];
 
   // Build the query using QueryBuilder class and fetch users
-  const queryBuilder = new QueryBuilder<IUser>(User.find(), query);
+  const queryBuilder = new QueryBuilder<IUser>(
+    User.find({ isDeleted: { $ne: true } }),
+    query
+  );
   const users = await queryBuilder
     .sort()
     .filter()
@@ -33,6 +38,9 @@ const getAllUsers = async (query: Record<string, string>) => {
 // Get single user
 const getSingleUser = async (id: string) => {
   const user = await User.findById(id).select("-password");
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
   return user;
 };
 
