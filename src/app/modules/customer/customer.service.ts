@@ -5,6 +5,31 @@ import { bcryptjs, httpStatus } from "../../import";
 import User from "../user/user.model";
 import { ICustomer } from "./customer.interface";
 import Customer from "./customer.model";
+import QueryBuilder from "../../utils/queryBuilder";
+
+// Get all customers
+const getAllCustomers = async (query: Record<string, string>) => {
+  const searchFields = ["name", "email", "phone"];
+
+  const queryBuilder = new QueryBuilder<ICustomer>(
+    Customer.find({ isDeleted: { $ne: true } }),
+    query
+  );
+  const customers = await queryBuilder
+    .sort()
+    .filter()
+    .paginate()
+    .fieldSelect()
+    .search(searchFields)
+    .build();
+
+  const meta = await queryBuilder.meta();
+
+  return {
+    data: customers,
+    meta,
+  };
+};
 
 // Create customer
 const createCustomer = async (payload: ICustomer, password: string) => {
@@ -49,6 +74,7 @@ const createCustomer = async (payload: ICustomer, password: string) => {
 
 // Customer service object
 const CustomerService = {
+  getAllCustomers,
   createCustomer,
 };
 
