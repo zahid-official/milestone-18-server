@@ -35,6 +35,20 @@ const getSingleCustomer = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Create customer
+const createCustomer = catchAsync(async (req: Request, res: Response) => {
+  const { password, ...body } = req?.body || {};
+  const result = await CustomerService.createCustomer(body, password);
+
+  // Send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "Account created successfully",
+    data: result,
+  });
+});
+
 // Delete customer
 const deleteCustomer = catchAsync(async (req: Request, res: Response) => {
   const id = req?.params?.id;
@@ -49,26 +63,12 @@ const deleteCustomer = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// Create customer
-const createCustomer = catchAsync(async (req: Request, res: Response) => {
-  const { password, ...body } = req?.body || {};
-  const result = await CustomerService.createCustomer(body, password);
-
-  // Send response
-  sendResponse(res, {
-    success: true,
-    statusCode: httpStatus.CREATED,
-    message: "Customer created successfully",
-    data: result,
-  });
-});
-
 // Customer controller object
 const CustomerController = {
   getAllCustomers,
   getSingleCustomer,
-  deleteCustomer,
   createCustomer,
+  deleteCustomer,
 };
 
 export default CustomerController;

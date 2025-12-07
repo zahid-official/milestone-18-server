@@ -42,6 +42,55 @@ const getSingleVendor = async (id: string) => {
   return vendor;
 };
 
+// Create vendor
+const createVendor = async (payload: IVendor, password: string) => {
+  // Block duplicate accounts by email
+  const existingUser = await User.findOne({ email: payload?.email });
+  if (existingUser) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      `An account already exists for '${payload?.email}'. Sign in or use a different email.`
+    );
+  }
+
+  const session = await mongoose.startSession();
+  try {
+    return await session.withTransaction(async () => {
+      // Hash password
+      const hashedPassword = await bcryptjs.hash(
+        password,
+        envVars.BCRYPT_SALT_ROUNDS
+      );
+
+      // Create user
+      const [user] = await User.create(
+        [
+          {
+            email: payload.email,
+            password: hashedPassword,
+            role: Role.VENDOR,
+          },
+        ],
+        { session }
+      );
+
+      // Create vendor linked to user
+      const [vendor] = await Vendor.create([{ ...payload, userId: user._id }], {
+        session,
+      });
+
+      return vendor;
+    });
+  } catch (error: any) {
+    throw new AppError(
+      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
+      error.message || "Failed to create vendor"
+    );
+  } finally {
+    await session.endSession();
+  }
+};
+
 // Delete vendor
 const deleteVendor = async (id: string) => {
   const session = await mongoose.startSession();
@@ -88,53 +137,12 @@ const deleteVendor = async (id: string) => {
   }
 };
 
-// Create vendor
-const createVendor = async (payload: IVendor, password: string) => {
-  const session = await mongoose.startSession();
-
-  try {
-    return await session.withTransaction(async () => {
-      // Hash password
-      const hashedPassword = await bcryptjs.hash(
-        password,
-        envVars.BCRYPT_SALT_ROUNDS
-      );
-
-      // Create user
-      const [user] = await User.create(
-        [
-          {
-            email: payload.email,
-            password: hashedPassword,
-            role: Role.VENDOR,
-          },
-        ],
-        { session }
-      );
-
-      // Create vendor linked to user
-      const [vendor] = await Vendor.create([{ ...payload, userId: user._id }], {
-        session,
-      });
-
-      return vendor;
-    });
-  } catch (error: any) {
-    throw new AppError(
-      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-      error.message || "Failed to create vendor"
-    );
-  } finally {
-    await session.endSession();
-  }
-};
-
 // Vendor service object
 const VendorService = {
   getAllVendors,
   getSingleVendor,
-  deleteVendor,
   createVendor,
+  deleteVendor,
 };
 
 export default VendorService;
