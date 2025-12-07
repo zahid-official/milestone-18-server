@@ -43,10 +43,19 @@ const getSingleAdmin = async (id: string) => {
   }
   return admin;
 };
+
 // Create admin
 const createAdmin = async (payload: IAdmin, password: string) => {
-  const session = await mongoose.startSession();
+  // Block duplicate accounts by email
+  const existingUser = await User.findOne({ email: payload?.email });
+  if (existingUser) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      `An account already exists for '${payload?.email}'. Sign in or use a different email.`
+    );
+  }
 
+  const session = await mongoose.startSession();
   try {
     return await session.withTransaction(async () => {
       // Hash password

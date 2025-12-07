@@ -43,6 +43,56 @@ const getSingleCustomer = async (id: string) => {
   return customer;
 };
 
+// Create customer
+const createCustomer = async (payload: ICustomer, password: string) => {
+  // Block duplicate accounts by email
+  const existingUser = await User.findOne({ email: payload?.email });
+  if (existingUser) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      `An account already exists for '${payload?.email}'. Sign in or use a different email.`
+    );
+  }
+
+  const session = await mongoose.startSession();
+  try {
+    return await session.withTransaction(async () => {
+      // Hash password
+      const hashedPassword = await bcryptjs.hash(
+        password,
+        envVars.BCRYPT_SALT_ROUNDS
+      );
+
+      // Create user
+      const [user] = await User.create(
+        [
+          {
+            email: payload.email,
+            password: hashedPassword,
+            needChangePassword: false,
+          },
+        ],
+        { session }
+      );
+
+      // Create customer linked to user
+      const [customer] = await Customer.create(
+        [{ ...payload, userId: user._id }],
+        { session }
+      );
+
+      return customer;
+    });
+  } catch (error: any) {
+    throw new AppError(
+      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
+      error.message || "Failed to create account"
+    );
+  } finally {
+    await session.endSession();
+  }
+};
+
 // Delete customer (soft delete customer and linked user)
 const deleteCustomer = async (id: string) => {
   const session = await mongoose.startSession();
@@ -89,53 +139,12 @@ const deleteCustomer = async (id: string) => {
   }
 };
 
-// Create customer
-const createCustomer = async (payload: ICustomer, password: string) => {
-  const session = await mongoose.startSession();
-
-  try {
-    return await session.withTransaction(async () => {
-      // Hash password
-      const hashedPassword = await bcryptjs.hash(
-        password,
-        envVars.BCRYPT_SALT_ROUNDS
-      );
-
-      // Create user
-      const [user] = await User.create(
-        [
-          {
-            email: payload.email,
-            password: hashedPassword,
-          },
-        ],
-        { session }
-      );
-
-      // Create customer linked to user
-      const [customer] = await Customer.create(
-        [{ ...payload, userId: user._id }],
-        { session }
-      );
-
-      return customer;
-    });
-  } catch (error: any) {
-    throw new AppError(
-      error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-      error.message || "Failed to create customer"
-    );
-  } finally {
-    await session.endSession();
-  }
-};
-
 // Customer service object
 const CustomerService = {
   getAllCustomers,
   getSingleCustomer,
-  deleteCustomer,
   createCustomer,
+  deleteCustomer,
 };
 
 export default CustomerService;
