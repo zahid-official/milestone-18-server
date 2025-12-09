@@ -2,8 +2,8 @@ import { Types } from "mongoose";
 
 // Defines product materials
 export enum Materials {
-  WOODEND = "WOODEND",
-  METEL = "METEL",
+  WOODEN = "WOODEN",
+  METAL = "METAL",
   BAMBOO = "BAMBOO",
 }
 
