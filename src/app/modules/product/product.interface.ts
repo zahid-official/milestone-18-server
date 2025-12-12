@@ -7,6 +7,16 @@ export enum Materials {
   BAMBOO = "BAMBOO",
 }
 
+// Defines product categories
+export enum ProductCategory {
+  CHAIR = "CHAIR",
+  BED = "BED",
+  SOFA = "SOFA",
+  TABLE = "TABLE",
+  SIDE_DRAWER = "SIDE DRAWER",
+  DINING_CHAIR = "DINING CHAIR",
+}
+
 // Product specifications interface definition
 interface IProductSpecifications {
   height?: number;
@@ -22,7 +32,7 @@ export interface IProduct {
   title: string;
   price: number;
   stock: number;
-  category: string;
+  category: ProductCategory;
   thumbnail?: string;
   description?: string;
   productOverview?: string;
