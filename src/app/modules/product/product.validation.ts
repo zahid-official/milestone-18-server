@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Materials } from "./product.interface";
+import { Materials, ProductCategory } from "./product.interface";
 
 // Zod schema for product specifications
 const productSpecificationsSchema = z.object({
@@ -82,16 +82,7 @@ const createProductSchema = z.object({
     .nonnegative({ error: "Stock cannot be negative." }),
 
   // Category
-  category: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Category is required"
-          : "Category must be a string",
-    })
-    .min(2, { error: "Category must be at least 2 characters long." })
-    .max(50, { error: "Category cannot exceed 50 characters." })
-    .trim(),
+  category: z.enum(Object.values(ProductCategory) as [string]),
 
   // Thumbnail
   thumbnail: z.string({ error: "Thumbnail must be string" }).trim().optional(),

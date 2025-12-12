@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IProduct, Materials } from "./product.interface";
+import { IProduct, Materials, ProductCategory } from "./product.interface";
 
 // Mongoose schema for product specifications
 const productSpecificationsSchema = new Schema(
@@ -20,7 +20,11 @@ const productSchema = new Schema<IProduct>(
     title: { type: String, required: true },
     price: { type: Number, required: true },
     stock: { type: Number, required: true },
-    category: { type: String, required: true },
+    category: {
+      type: String,
+      enum: Object.values(ProductCategory),
+      required: true,
+    },
     thumbnail: { type: String },
     description: { type: String },
     productOverview: { type: String },
