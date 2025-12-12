@@ -1,384 +1,557 @@
-# Lorvic Backend API
+<div align="center">
+  <img
+    src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6&height=200&section=header&text=Lorvic%20API&fontSize=50&fontAlignY=35&animation=fadeIn&desc=Production-Ready%20E-Commerce%20Platform&descAlignY=55&descSize=18"
+    alt="Header"
+  />
+</div>
 
-> Enterprise-grade e-commerce platform backend built with TypeScript, Express, and MongoDB
+<div align="center">
+  <h2>
+    <img
+      src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rocket.png"
+      width="28px"
+      alt="Fast"
+    />
+    Enterprise-Grade Multi-Vendor E-Commerce Backend
+  </h2>
+  <p><strong>Built with precision, designed for growth</strong></p>
+  <p><strong>Lorvic</strong> is a production-ready, scalable backend API for modern multi-vendor e-commerce platforms. Built with cutting-edge technologies and industry best practices, it provides a robust foundation for marketplace applications with secure payment processing, role-based access control, and comprehensive vendor management.</p>
+</div>
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-5.0-lightgrey.svg)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Latest-green.svg)](https://www.mongodb.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<div align="center">
+    
+  [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?style=for-the-badge)](https://github.com/zahid-official/milestone-18-server)
+  [![Node.js](https://img.shields.io/badge/Node.js-18.x-3C873A.svg?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![MongoDB](https://img.shields.io/badge/MongoDB-6.0-47A248.svg?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+  [![Express](https://img.shields.io/badge/Express.js-5.0-aa8800.svg?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+</div>
 
-## 📋 Table of Contents
+<div align="center">
+    
+  [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black.svg?style=for-the-badge&logo=vercel)](https://vercel.com)
+  [![Stripe](https://img.shields.io/badge/Stripe-008CDD.svg?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
+  [![License](https://img.shields.io/badge/license-MIT-22333b.svg?style=for-the-badge)](LICENSE)
+  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-0081a7.svg?style=for-the-badge)](https://github.com/zahid-official/milestone-18-server/pulls)
+</div>
 
-- [Overview](#-overview)
-- [Key Features](#-key-features)
-- [Technology Stack](#-technology-stack)
-- [Architecture](#-architecture)
-- [Getting Started](#-getting-started)
-- [API Documentation](#-api-documentation)
-- [Authentication & Authorization](#-authentication--authorization)
-- [Payment Integration](#-payment-integration)
-- [File Upload System](#-file-upload-system)
-- [Environment Configuration](#-environment-configuration)
-- [Deployment](#-deployment)
-- [Contributing](#-contributing)
-- [Links](#-links)
+## ✨ Features
 
----
+<table align="center">
+  <tr>
+    <td width="50%">
+      
+### 🔐 Authentication & Security
+- **JWT-based Authentication** with httpOnly cookies
+- **Role-based Access Control** (Admin, Vendor, Customer)
+- **Passport.js Integration** with local strategy
+- **Password Security** using bcrypt encryption
+- **Automatic Admin Bootstrap** on deployment
+      
+### 🏪 Vendor Management
+- **Multi-vendor Marketplace** architecture
+- **Product Catalog Management** with image uploads
+- **Inventory Tracking** with real-time updates
+- **Order Processing** with status tracking
+- **Vendor Analytics** and reporting
+      
+    </td>
+    <td width="50%">
+      
+### 👨‍💼 Administrative Control
+- **User Management** dashboard
+- **Vendor Account Management** with approval workflows
+- **Customer Account Oversight** and support
+- **Platform Analytics** with detailed insights
+- **Soft Delete Patterns** for data retention
+      
+### 💰 Payment & Orders
+- **Stripe Checkout Integration** for secure payments
+- **Payment Webhooks** for real-time updates
+- **Order Lifecycle Management** (Pending → Delivered)
+- **Automatic Stock Management** with restock on cancel
+- **Transaction History** and financial tracking
+      
+    </td>
+  </tr>
+</table>
 
-## 🎯 Overview
+</br>
 
-Lorvic Backend API is a production-ready RESTful service powering a multi-vendor e-commerce platform. Built with modern TypeScript practices, it provides robust role-based access control, secure payment processing, and scalable architecture for managing vendors, customers, products, and orders.
+## 🗺️ System Architecture
 
-### Project Links
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        A[Web Application]
+        B[Mobile Application]
+        C[Admin Dashboard]
+    end
 
-| Resource | URL |
-|----------|-----|
-| **Live API** | [lorvic-api.vercel.app](https://lorvic-api.vercel.app/) |
-| **Client Application** | [lorvic-official.vercel.app](https://lorvic-official.vercel.app/) |
-| **Server Repository** | [GitHub - Server](https://github.com/zahid-official/milestone-18-server) |
-| **Client Repository** | [GitHub - Client](https://github.com/zahid-official/milestone-18-client) |
-| **Author** | [@zahid-official](https://github.com/zahid-official) |
+    subgraph "API Gateway"
+        D[Load Balancer]
+        E[API Router /api/v1]
+    end
 
----
+    subgraph "Service Layer"
+        F[Auth Service]
+        G[User Service]
+        H[Admin Service]
+        I[Vendor Service]
+        J[Product Service]
+        K[Order Service]
+        L[Payment Service]
+    end
 
-## ✨ Key Features
+    subgraph "Data Layer"
+        M[(MongoDB)]
+        N[Cloudinary CDN]
+        O[Stripe Gateway]
+    end
 
-### Security & Authentication
-- 🔐 **JWT-based authentication** with httpOnly cookies for enhanced security
-- 👥 **Role-based access control** (Admin, Vendor, Customer)
-- 🔑 **Passport.js integration** with local strategy
-- 🛡️ **Automatic admin bootstrapping** on first deployment
-- 🔒 **Password encryption** using bcrypt with configurable salt rounds
-
-### Business Logic
-- 🏪 **Multi-vendor marketplace** with isolated product catalogs
-- 📦 **Inventory management** with real-time stock tracking
-- 🛒 **Complete order lifecycle** (Pending → Confirmed → Processing → Delivered)
-- ❌ **Order cancellation** with automatic stock restoration
-- 💳 **Stripe Checkout integration** for secure payments
-- 📬 **Webhook handling** for payment confirmation and order updates
-
-### Technical Excellence
-- ✅ **Zod schema validation** for type-safe request handling
-- 🔍 **Advanced query system** (pagination, search, filtering)
-- ☁️ **Cloudinary integration** for media asset management
-- 🧹 **Soft delete patterns** for data retention
-- ⚠️ **Centralized error handling** with detailed logging
-- 🚦 **Request/response middleware pipeline**
-
----
-
-## 🛠 Technology Stack
-
-### Core Framework
-```
-Node.js (v18+)          - Runtime environment
-Express 5               - Web application framework
-TypeScript              - Type-safe development
-```
-
-### Database & ODM
-```
-MongoDB                 - NoSQL database
-Mongoose                - Object Data Modeling
-```
-
-### Authentication & Security
-```
-Passport.js             - Authentication middleware
-JWT (jsonwebtoken)      - Token generation & verification
-bcrypt                  - Password hashing
-express-session         - Session management
-```
-
-### Validation & Types
-```
-Zod                     - Runtime type validation
-TypeScript              - Compile-time type checking
-```
-
-### Payment & Storage
-```
-Stripe                  - Payment processing
-Cloudinary              - Media storage & CDN
-Multer                  - File upload handling
-```
-
-### Development Tools
-```
-ts-node-dev             - Development server
-ESLint                  - Code linting
-pnpm                    - Package management
-```
-
----
-
-## 🏗 Architecture
-
-### Project Structure
-
-```
-lorvic-backend/
-├── src/
-│   ├── app.ts                      # Application entry point
-│   ├── server.ts                   # Server initialization & DB connection
-│   │
-│   └── app/
-│       ├── config/                 # Configuration files
-│       │   ├── index.ts            # Environment variables
-│       │   ├── multer.config.ts    # File upload configuration
-│       │   ├── cloudinary.config.ts # Cloud storage setup
-│       │   ├── stripe.config.ts    # Payment gateway setup
-│       │   └── passport.config.ts  # Authentication strategy
-│       │
-│       ├── middlewares/            # Express middlewares
-│       │   ├── auth.middleware.ts  # JWT validation & role checks
-│       │   ├── validateSchema.ts   # Zod schema validation
-│       │   ├── errorHandler.ts     # Global error handler
-│       │   └── notFound.ts         # 404 handler
-│       │
-│       ├── modules/                # Feature modules
-│       │   ├── auth/               # Authentication
-│       │   │   ├── auth.controller.ts
-│       │   │   ├── auth.service.ts
-│       │   │   ├── auth.validation.ts
-│       │   │   └── auth.route.ts
-│       │   │
-│       │   ├── user/               # User management
-│       │   ├── admin/              # Admin operations
-│       │   ├── vendor/             # Vendor management
-│       │   ├── customer/           # Customer operations
-│       │   ├── product/            # Product catalog
-│       │   ├── order/              # Order processing
-│       │   └── payment/            # Payment webhooks
-│       │
-│       ├── utils/                  # Utility functions
-│       │   ├── jwtHelper.ts        # JWT generation & verification
-│       │   ├── cookieHelper.ts     # Cookie management
-│       │   ├── queryBuilder.ts     # Database query construction
-│       │   └── responseHelper.ts   # Standardized responses
-│       │
-│       └── routes/                 # API route definitions
-│           └── index.ts            # Route aggregator (/api/v1)
-│
-├── dist/                           # Compiled output
-├── .env.example                    # Environment template
-├── tsconfig.json                   # TypeScript configuration
-└── package.json                    # Dependencies & scripts
+    A & B & C --> D
+    D --> E
+    E --> F & G & H & I & J & K & L
+    F & G & H & I & J & K & L --> M
+    J --> N
+    L --> O
 ```
 
-### Module Architecture
+<div align="center">
+    
+| Design Principle              | Description                                                           |
+| ----------------------------- | --------------------------------------------------------------------- |
+| **🎯 Modular Architecture**    | Clear module boundaries for maintainability and scalability           |
+| **📈 Horizontal Scalability**  | Built to scale out with increased load                               |
+| **🔒 Security-First**          | Security considerations at every architectural layer                  |
+| **☁️ Cloud-Native**            | Designed for cloud deployment with CDN and payment integration       |
+| **📊 Type-Safe**               | Full TypeScript coverage with Zod runtime validation                 |
+</div>
 
-Each feature module follows a consistent pattern:
+## 🛠️ **Tech Stack**
 
-```typescript
-module/
-├── module.interface.ts      // TypeScript interfaces
-├── module.model.ts          // Mongoose schema & model
-├── module.validation.ts     // Zod validation schemas
-├── module.controller.ts     // Request handlers
-├── module.service.ts        // Business logic
-└── module.route.ts          // Express routes
+<div align="center">
+    
+### **Core Technologies**
+
+<table>
+  <tr>
+    <td align="center" width="120">
+      <img
+        src="https://skillicons.dev/icons?i=typescript"
+        width="48"
+        height="48"
+        alt="TypeScript"
+      />
+      <br />TypeScript
+    </td>
+    <td align="center" width="100">
+      <img
+        src="https://skillicons.dev/icons?i=nodejs"
+        width="50"
+        height="50"
+        alt="Node.js"
+      />
+      <br />Node.js
+    </td>
+    <td align="center" width="100">
+      <img
+        src="https://skillicons.dev/icons?i=express"
+        width="50"
+        height="50"
+        alt="Express"
+      />
+      <br />Express 5
+    </td>
+    <td align="center" width="100">
+      <img
+        src="https://skillicons.dev/icons?i=mongodb"
+        width="50"
+        height="50"
+        alt="MongoDB"
+      />
+      <br />MongoDB
+    </td>
+    <td align="center" width="100">
+      <img
+        src="https://skillicons.dev/icons?i=cloudflare"
+        width="50"
+        height="50"
+        alt="Cloudinary"
+      />
+      <br />Cloudinary
+    </td>
+    <td align="center" width="120">
+      <img
+        src="https://skillicons.dev/icons?i=vercel"
+        width="48"
+        height="48"
+        alt="Vercel"
+      />
+      <br />Vercel
+    </td>
+  </tr>
+</table>
+
+### **Additional Stack**
+
+| Category             | Technologies                 | Purpose                      |
+| :------------------- | :--------------------------- | :--------------------------- |
+| 🔒 **Security**      | `JWT` `Passport.js` `Bcrypt` | Authentication & protection  |
+| ✅ **Validation**    | `Zod` `Mongoose`             | Schema validation & ODM      |
+| 💳 **Payment**       | `Stripe`                     | Payment processing           |
+| ☁️ **Storage**       | `Multer` `Cloudinary`        | File upload & CDN            |
+| 🚀 **Deployment**    | `Vercel`                     | Cloud deployment             |
+</div>
+
+</br>
+
+## 🚀 **Getting Started**
+
+### **⚡ Quick Installation**
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/zahid-official/milestone-18-server.git
+cd milestone-18-server
+
+# 2. Install dependencies (pnpm recommended)
+pnpm install
+
+# 3. Set up environment variables
+cp .env.example .env
+# Edit .env with your configuration
+
+# 4. Start development server
+pnpm dev
+
+# 5. Access the API
+# http://localhost:5000/api/v1
 ```
 
----
+### **📦 Using MongoDB Atlas (Recommended)**
 
-## 🚀 Getting Started
+For easier setup without local MongoDB installation:
 
-### Prerequisites
-
-- **Node.js**: v18.0.0 or higher
-- **pnpm**: Recommended package manager ([install via corepack](https://pnpm.io/installation#using-corepack))
-- **MongoDB**: Atlas cluster or local instance
-- **Stripe Account**: For payment processing
-- **Cloudinary Account**: For media storage
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/zahid-official/milestone-18-server.git
-   cd milestone-18-server
+1. Create free account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a cluster and get connection string
+3. Update `.env` with your connection string:
+   
+   ```env
+   DB_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/lorvicDB
    ```
 
-2. **Install dependencies**
-   ```bash
-   pnpm install
-   ```
+### **🔧 Environment Configuration**
 
-3. **Configure environment**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your credentials
-   ```
+<details>
+<summary><b>Click to view essential .env variables</b></summary>
 
-4. **Start development server**
-   ```bash
-   pnpm dev
-   ```
+```env
+# ================================
+# Core Configuration
+# ================================
+NODE_ENV=development
+PORT=5000
+FRONTEND_URL=http://localhost:3000
 
-   The server will start at `http://localhost:5000`
+# ================================
+# Database
+# ================================
+DB_URL=mongodb+srv://username:password@cluster.mongodb.net/lorvicDB?retryWrites=true&w=majority
 
-### Available Scripts
+# OR Local MongoDB
+# DB_URL=mongodb://localhost:27017/lorvicDB
 
-| Script | Description |
-|--------|-------------|
-| `pnpm dev` | Start development server with hot reload |
-| `pnpm build` | Compile TypeScript to JavaScript |
-| `pnpm start` | Run production server (requires build) |
-| `pnpm lint` | Run ESLint on source files |
+# ================================
+# JWT Configuration
+# ================================
+JWT_ACCESS_SECRET=your-super-secret-access-key-min-32-chars
+JWT_ACCESS_EXPIRESIN=1h
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-min-32-chars
+JWT_REFRESH_EXPIRESIN=7d
+
+# ================================
+# Session Configuration
+# ================================
+EXPRESS_SESSION_SECRET=your-session-secret-min-32-chars
+
+# ================================
+# Password Security
+# ================================
+BCRYPT_SALT_ROUNDS=12
+
+# ================================
+# Default Admin (Auto-created on startup)
+# ================================
+DEFAULT_ADMIN_EMAIL=admin@lorvic.com
+DEFAULT_ADMIN_PASSWORD=ChangeMe123!
+
+# ================================
+# Cloudinary Configuration
+# ================================
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=123456789012345
+CLOUDINARY_API_SECRET=your-cloudinary-secret
+
+# ================================
+# Stripe Configuration
+# ================================
+STRIPE_SECRET_KEY=sk_test_51xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+STRIPE_WEBHOOK_SECRET_KEY=whsec_xxxxxxxxxxxxxxxxxxxxxxxxxx
+STRIPE_SUCCESS_FRONTEND_URL=http://localhost:3000/payment/success
+STRIPE_CANCELED_FRONTEND_URL=http://localhost:3000/payment/cancel
+```
+
+</details>
 
 ---
 
-## 📡 API Documentation
+## 📚 **API Documentation**
 
-### Base URL
+### **🔗 Base URLs**
 
-```
+```yaml
 Development: http://localhost:5000/api/v1
 Production:  https://lorvic-api.vercel.app/api/v1
 ```
 
-### Authentication Endpoints
+### **📋 API Endpoints**
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| `POST` | `/auth/login` | Public | User authentication |
-| `POST` | `/auth/logout` | Authenticated | Clear session |
-| `PATCH` | `/auth/changePassword` | Authenticated | Update password |
+<details>
+<summary><b>🔐 Click to view Authentication Routes</b></summary>
 
-### User Management
+| HTTP Method | Endpoint               | Description                      | Authentication Required |
+| ----------- | ---------------------- | -------------------------------- | ----------------------- |
+| `POST`      | `/auth/login`          | User authentication              | No                      |
+| `POST`      | `/auth/logout`         | Clear session and cookies        | Authenticated           |
+| `PATCH`     | `/auth/changePassword` | Update user password             | Authenticated           |
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| `GET` | `/user` | Admin | List all active users |
-| `GET` | `/user/deletedUsers` | Admin | List soft-deleted users |
-| `GET` | `/user/singleUser/:id` | Admin | Get user by ID |
-| `GET` | `/user/profile` | Authenticated | Get current user profile |
-| `PATCH` | `/user/profile` | Authenticated | Update profile (supports file upload) |
+</details>
 
-### Admin Operations
+<details>
+<summary><b>👤 Click to view User Management Routes</b></summary>
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| `GET` | `/admin` | Admin | List all admins |
-| `POST` | `/admin/create` | Admin | Create new admin |
-| `DELETE` | `/admin/:id` | Admin | Soft delete admin |
+| HTTP Method | Endpoint                 | Description                      | Authentication Required |
+| ----------- | ------------------------ | -------------------------------- | ----------------------- |
+| `GET`       | `/user`                  | List all active users            | Admin Only              |
+| `GET`       | `/user/deletedUsers`     | List soft-deleted users          | Admin Only              |
+| `GET`       | `/user/singleUser/:id`   | Get user by ID                   | Admin Only              |
+| `GET`       | `/user/profile`          | Get current user profile         | Authenticated           |
+| `PATCH`     | `/user/profile`          | Update profile (supports upload) | Authenticated           |
 
-### Vendor Management
+</details>
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| `GET` | `/vendor` | Admin | List all vendors |
-| `POST` | `/vendor/create` | Admin | Create vendor account |
-| `DELETE` | `/vendor/:id` | Admin | Soft delete vendor |
+<details>
+<summary><b>👨‍💼 Click to view Admin Management Routes</b></summary>
 
-### Customer Operations
+| HTTP Method | Endpoint          | Description          | Authentication Required |
+| ----------- | ----------------- | -------------------- | ----------------------- |
+| `GET`       | `/admin`          | List all admins      | Admin Only              |
+| `POST`      | `/admin/create`   | Create new admin     | Admin Only              |
+| `DELETE`    | `/admin/:id`      | Soft delete admin    | Admin Only              |
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| `GET` | `/customer` | Admin | List all customers |
-| `POST` | `/customer/create` | Public | Customer registration |
-| `DELETE` | `/customer/:id` | Admin | Soft delete customer |
+</details>
 
-### Product Catalog
+<details>
+<summary><b>🏪 Click to view Vendor Management Routes</b></summary>
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| `GET` | `/product` | Vendor, Admin | List products (with filters) |
-| `GET` | `/product/singleProduct/:id` | Vendor, Admin | Get product details |
-| `POST` | `/product/create` | Vendor | Create product (with image) |
-| `PATCH` | `/product/:id` | Vendor | Update product |
-| `DELETE` | `/product/:id` | Vendor | Delete product |
+| HTTP Method | Endpoint           | Description           | Authentication Required |
+| ----------- | ------------------ | --------------------- | ----------------------- |
+| `GET`       | `/vendor`          | List all vendors      | Admin Only              |
+| `POST`      | `/vendor/create`   | Create vendor account | Admin Only              |
+| `DELETE`    | `/vendor/:id`      | Soft delete vendor    | Admin Only              |
 
-### Order Management
+</details>
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| `GET` | `/order` | Vendor | List vendor orders |
-| `GET` | `/order/userOrders` | Customer | List customer orders |
-| `GET` | `/order/singleOrder/:id` | Vendor | Get order details |
-| `GET` | `/order/userOrder/:id` | Customer | Get customer order |
-| `POST` | `/order/create` | Customer | Create order & checkout |
-| `PATCH` | `/order/:id/in-progress` | Vendor | Mark order processing |
-| `PATCH` | `/order/:id/delivered` | Vendor | Mark order delivered |
-| `PATCH` | `/order/:id/cancel` | Customer | Cancel unpaid order |
+<details>
+<summary><b>👥 Click to view Customer Management Routes</b></summary>
 
-### Webhooks
+| HTTP Method | Endpoint            | Description            | Authentication Required |
+| ----------- | ------------------- | ---------------------- | ----------------------- |
+| `GET`       | `/customer`         | List all customers     | Admin Only              |
+| `POST`      | `/customer/create`  | Customer registration  | Public                  |
+| `DELETE`    | `/customer/:id`     | Soft delete customer   | Admin Only              |
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| `POST` | `/webhook` | Stripe | Payment status updates |
+</details>
 
-### Query Parameters
+<details>
+<summary><b>📦 Click to view Product Catalog Routes</b></summary>
 
-The API supports advanced filtering, searching, and pagination:
+| HTTP Method | Endpoint                     | Description                      | Authentication Required |
+| ----------- | ---------------------------- | -------------------------------- | ----------------------- |
+| `GET`       | `/product`                   | List products (with filters)     | Vendor/Admin            |
+| `GET`       | `/product/singleProduct/:id` | Get product details              | Vendor/Admin            |
+| `POST`      | `/product/create`            | Create product (with image)      | Vendor Only             |
+| `PATCH`     | `/product/:id`               | Update product                   | Vendor Only (Owner)     |
+| `DELETE`    | `/product/:id`               | Delete product                   | Vendor Only (Owner)     |
 
+</details>
+
+<details>
+<summary><b>🛍️ Click to view Order Management Routes</b></summary>
+
+| HTTP Method | Endpoint                    | Description                   | Authentication Required |
+| ----------- | --------------------------- | ----------------------------- | ----------------------- |
+| `GET`       | `/order`                    | List vendor orders            | Vendor Only             |
+| `GET`       | `/order/userOrders`         | List customer orders          | Customer Only           |
+| `GET`       | `/order/singleOrder/:id`    | Get order details (vendor)    | Vendor Only             |
+| `GET`       | `/order/userOrder/:id`      | Get order details (customer)  | Customer Only           |
+| `POST`      | `/order/create`             | Create order & checkout       | Customer Only           |
+| `PATCH`     | `/order/:id/in-progress`    | Mark order processing         | Vendor Only             |
+| `PATCH`     | `/order/:id/delivered`      | Mark order delivered          | Vendor Only             |
+| `PATCH`     | `/order/:id/cancel`         | Cancel unpaid order           | Customer Only           |
+
+</details>
+
+<details>
+<summary><b>💳 Click to view Payment Webhooks</b></summary>
+
+| HTTP Method | Endpoint   | Description               | Authentication Required |
+| ----------- | ---------- | ------------------------- | ----------------------- |
+| `POST`      | `/webhook` | Stripe payment updates    | Stripe Signature        |
+
+</details>
+
+### API Response Format
+
+All API responses follow this consistent structure:
+
+#### Success Response
+
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Operation completed successfully",
+  "data": {
+    "Response payload"
+  },
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "totalPage": 5,
+    "totalDoc": 48
+  }
+}
 ```
-GET /api/v1/product?search=laptop&category=electronics&page=1&limit=10&sort=-createdAt
+
+#### Error Response
+
+```json
+{
+  "success": false,
+  "statusCode": 400,
+  "message": "Validation error",
+  "error": {
+    "details": [
+      {
+        "field": "email",
+        "message": "Invalid email format"
+      }
+    ]
+  }
+}
 ```
 
-**Supported parameters:**
-- `search`: Full-text search across fields
-- `page`: Page number (default: 1)
-- `limit`: Items per page (default: 10)
-- `sort`: Field to sort by (prefix with `-` for descending)
-- Any model field for filtering
-
----
-
-## 🔐 Authentication & Authorization
-
-### Authentication Flow
-
-1. **Login**: Client sends credentials to `/auth/login`
-2. **Token Generation**: Server creates JWT tokens (access & refresh)
-3. **Cookie Storage**: Tokens stored in httpOnly cookies
-4. **Request Authentication**: Client includes cookies in subsequent requests
-5. **Token Validation**: Middleware verifies JWT on protected routes
-
-### Token Configuration
-
-```typescript
-Access Token:  1 hour expiry, httpOnly, secure
-Refresh Token: 7 days expiry, httpOnly, secure
-```
+## 👥 User Roles & Permissions
 
 ### Role Hierarchy
 
+```mermaid
+graph TD
+    A[Administrator] --> B[Full System Access]
+    C[Vendor] --> D[Product Management]
+    E[Customer] --> F[Shopping & Orders]
+
+    B --> G[User Management]
+    B --> H[Vendor Management]
+    B --> I[Platform Oversight]
+
+    D --> J[Create/Update Products]
+    D --> K[Manage Orders]
+    D --> L[View Analytics]
+
+    F --> M[Browse Products]
+    F --> N[Place Orders]
+    F --> O[Order History]
 ```
-ADMIN     → Full system access
-VENDOR    → Manage own products, view own orders
-CUSTOMER  → Place orders, manage profile
-```
 
-### Cookie Security
+### Administrator Role
 
-```typescript
-Production:
-  - secure: true (HTTPS only)
-  - sameSite: 'none' (cross-origin)
-  - httpOnly: true (XSS prevention)
+Administrators have comprehensive platform oversight with full system access. Key responsibilities include:
 
-Development:
-  - secure: false (HTTP allowed)
-  - sameSite: 'lax'
-  - httpOnly: true
-```
+- **User Management**: Complete control over user accounts including creation, modification, and soft deletion
+- **Vendor Operations**: Review vendor accounts, manage vendor status and permissions
+- **Customer Support**: Access to all customer data, orders, and support operations
+- **Platform Oversight**: Access to all products, transactions, and system analytics
+- **System Administration**: Configuration management and default admin bootstrap
 
-### Frontend Integration
+### Vendor Role
 
-```javascript
-// Fetch with credentials
-fetch('https://lorvic-api.vercel.app/api/v1/user/profile', {
-  method: 'GET',
-  credentials: 'include', // Important!
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
-```
+Vendors are marketplace sellers with specialized tools for product and order management:
+
+- **Product Catalog**: Create, update, and delete products with image uploads
+- **Inventory Management**: Track stock levels with automatic updates on orders
+- **Order Processing**: View and manage orders for owned products
+- **Order Lifecycle**: Move orders through stages (Confirmed → Processing → Delivered)
+- **Analytics Access**: View sales performance and product metrics
+
+### Customer Role
+
+Customers represent the buyer base with access to shopping and order functionality:
+
+- **Account Management**: Profile creation, modification, and maintenance
+- **Product Browsing**: Search, filter, and view product catalogs
+- **Shopping Cart**: Create orders with multiple products
+- **Checkout Process**: Secure payment via Stripe Checkout
+- **Order Management**: View order history and cancel unpaid orders
+- **Order Tracking**: Monitor order status from confirmation to delivery
+
+---
+
+## 🔒 Security
+
+### Authentication Framework
+
+**JWT Implementation**
+
+- Stateless authentication using JSON Web Tokens
+- Dual-token system with access and refresh tokens
+- httpOnly cookies for XSS protection
+- Secure cookie flags in production (HTTPS, sameSite: none)
+- Automatic token validation on protected routes
+
+**Password Security**
+
+- bcrypt hashing with configurable salt rounds (default: 12)
+- Password complexity requirements enforced
+- Secure password change process with old password verification
+- Protection against common password attacks
+
+### Authorization System
+
+**Role-Based Access Control**
+
+- Granular permission system based on user roles (Admin, Vendor, Customer)
+- Resource-level access control for sensitive operations
+- Ownership validation (vendors can only modify their own products)
+- Dynamic permission validation for all protected endpoints
+
+### Data Protection
+
+**Encryption Standards**
+
+- Data encryption at rest and in transit
+- Secure communication protocols (HTTPS in production)
+- Database connection encryption
+- API endpoint security headers with CORS configuration
+
+**Privacy Controls**
+
+- Soft delete patterns for data retention
+- User data protection with role-based access
+- Secure file uploads with Cloudinary integration
+- Payment data never stored (handled by Stripe)
 
 ---
 
@@ -386,14 +559,23 @@ fetch('https://lorvic-api.vercel.app/api/v1/user/profile', {
 
 ### Stripe Checkout Flow
 
-```
-1. Customer creates order → POST /order/create
-2. Server reduces stock, creates payment record (UNPAID)
-3. Server generates Stripe Checkout session
-4. Returns checkout URL to client
-5. Customer completes payment on Stripe
-6. Stripe sends webhook → POST /webhook
-7. Server updates payment (PAID) and order (CONFIRMED)
+```mermaid
+sequenceDiagram
+    participant C as Customer
+    participant A as Lorvic API
+    participant S as Stripe
+    participant W as Webhook
+
+    C->>A: POST /order/create
+    A->>A: Validate & Reduce Stock
+    A->>S: Create Checkout Session
+    S-->>A: Return Session URL
+    A-->>C: Return Checkout URL
+    C->>S: Complete Payment
+    S->>W: Send Webhook Event
+    W->>A: POST /webhook
+    A->>A: Update Payment & Order Status
+    A->>A: Confirm Order
 ```
 
 ### Order Status Lifecycle
@@ -414,11 +596,11 @@ FAILED    → Payment declined or session expired
 
 ### Webhook Events Handled
 
-| Event | Action |
-|-------|--------|
-| `checkout.session.completed` | Mark payment PAID, order CONFIRMED |
-| `checkout.session.expired` | Mark payment FAILED, restore stock |
-| `checkout.session.async_payment_failed` | Mark payment FAILED, restore stock |
+| Event                                | Action                                    |
+| ------------------------------------ | ----------------------------------------- |
+| `checkout.session.completed`         | Mark payment PAID, order CONFIRMED        |
+| `checkout.session.expired`           | Mark payment FAILED, restore stock        |
+| `checkout.session.async_payment_failed` | Mark payment FAILED, restore stock     |
 
 ### Local Webhook Testing
 
@@ -475,114 +657,132 @@ If a database operation fails after upload, the middleware automatically deletes
 
 ---
 
-## ⚙️ Environment Configuration
+## 💻 Development & Deployment
 
-### Required Variables
+<details>
+<summary><h3>📂 Project Structure</h3></summary>
 
-Create a `.env` file in the project root:
-
-```bash
-# ================================
-# DATABASE
-# ================================
-DB_URL=mongodb+srv://username:password@cluster.mongodb.net/lorvic?retryWrites=true&w=majority
-
-# ================================
-# SERVER
-# ================================
-PORT=5000
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
-
-# ================================
-# JWT AUTHENTICATION
-# ================================
-JWT_ACCESS_SECRET=your-super-secret-access-key-min-32-chars
-JWT_ACCESS_EXPIRESIN=1h
-JWT_REFRESH_SECRET=your-super-secret-refresh-key-min-32-chars
-JWT_REFRESH_EXPIRESIN=7d
-
-# ================================
-# SESSION
-# ================================
-EXPRESS_SESSION_SECRET=your-session-secret-min-32-chars
-
-# ================================
-# PASSWORD HASHING
-# ================================
-BCRYPT_SALT_ROUNDS=12
-
-# ================================
-# DEFAULT ADMIN (Auto-created on startup)
-# ================================
-DEFAULT_ADMIN_EMAIL=admin@lorvic.com
-DEFAULT_ADMIN_PASSWORD=ChangeMe123!
-
-# ================================
-# CLOUDINARY
-# ================================
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=123456789012345
-CLOUDINARY_API_SECRET=your-cloudinary-secret
-
-# ================================
-# STRIPE
-# ================================
-STRIPE_SECRET_KEY=sk_test_51xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-STRIPE_WEBHOOK_SECRET_KEY=whsec_xxxxxxxxxxxxxxxxxxxxxxxxxx
-STRIPE_SUCCESS_FRONTEND_URL=http://localhost:3000/payment/success
-STRIPE_CANCELED_FRONTEND_URL=http://localhost:3000/payment/cancel
+```
+lorvic-backend/
+├── 📁 src/
+│   ├── 📁 app/
+│   │   ├── 📁 config/                    # Application configuration
+│   │   │   ├── 📄 index.ts                # Environment variables
+│   │   │   ├── 📄 multer.config.ts        # File upload config
+│   │   │   ├── 📄 cloudinary.config.ts    # Cloud storage
+│   │   │   ├── 📄 stripe.config.ts        # Payment gateway
+│   │   │   └── 📄 passport.config.ts      # Auth strategy
+│   │   │
+│   │   ├── 📁 middlewares/                # Express middlewares
+│   │   │   ├── 📄 auth.middleware.ts       # JWT validation
+│   │   │   ├── 📄 validateSchema.ts        # Zod validation
+│   │   │   ├── 📄 errorHandler.ts          # Global errors
+│   │   │   └── 📄 notFound.ts              # 404 handler
+│   │   │
+│   │   ├── 📁 modules/                    # Feature modules
+│   │   │   ├── 📁 auth/                   # Authentication
+│   │   │   │   ├── 📄 auth.controller.ts
+│   │   │   │   ├── 📄 auth.service.ts
+│   │   │   │   ├── 📄 auth.validation.ts
+│   │   │   │   └── 📄 auth.route.ts
+│   │   │   │
+│   │   │   ├── 📁 user/                   # User management
+│   │   │   │   ├── 📄 user.controller.ts
+│   │   │   │   ├── 📄 user.interface.ts
+│   │   │   │   ├── 📄 user.model.ts
+│   │   │   │   ├── 📄 user.service.ts
+│   │   │   │   ├── 📄 user.validation.ts
+│   │   │   │   └── 📄 user.route.ts
+│   │   │   │
+│   │   │   ├── 📁 admin/                  # Admin operations
+│   │   │   ├── 📁 vendor/                 # Vendor management
+│   │   │   ├── 📁 customer/               # Customer operations
+│   │   │   ├── 📁 product/                # Product catalog
+│   │   │   ├── 📁 order/                  # Order processing
+│   │   │   └── 📁 payment/                # Payment webhooks
+│   │   │
+│   │   ├── 📁 routes/                     # Route aggregation
+│   │   │   └── 📄 index.ts                # Main routes (/api/v1)
+│   │   │
+│   │   └── 📁 utils/                      # Utility functions
+│   │       ├── 📄 jwtHelper.ts            # JWT utilities
+│   │       ├── 📄 cookieHelper.ts         # Cookie management
+│   │       ├── 📄 queryBuilder.ts         # Query construction
+│   │       └── 📄 responseHelper.ts       # Response formatting
+│   │
+│   ├── 📄 app.ts                          # Express app setup
+│   └── 📄 server.ts                       # Server bootstrap
+│
+├── 📁 dist/                               # Compiled output
+├── 📄 .env.example                        # Environment template
+├── 📄 .gitignore                          # Git ignore rules
+├── 📄 package.json                        # Dependencies
+├── 📄 tsconfig.json                       # TypeScript config
+├── 📄 vercel.json                         # Vercel config
+└── 📄 README.md                           # This file
 ```
 
-### Security Best Practices
+</details>
 
-- ✅ Use strong, randomly generated secrets (32+ characters)
-- ✅ Change default admin password immediately after first login
-- ✅ Never commit `.env` to version control
-- ✅ Use different credentials for development and production
-- ✅ Rotate secrets periodically
-- ✅ Use environment-specific Stripe keys (test vs live)
+### **Available Scripts**
 
----
+| Script       | Description                              |
+| ------------ | ---------------------------------------- |
+| `pnpm dev`   | Start development server with hot reload |
+| `pnpm build` | Compile TypeScript to JavaScript         |
+| `pnpm start` | Run production server (requires build)   |
+| `pnpm lint`  | Run ESLint on source files               |
 
-## 🌐 Deployment
+### **Deploy to Vercel**
 
-### Vercel Deployment (Recommended)
+<div>
 
-1. **Prepare for deployment**
-   ```bash
-   pnpm build
-   ```
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/zahid-official/milestone-18-server)
 
-2. **Configure Vercel**
-   
-   Create `vercel.json`:
-   ```json
-   {
-     "version": 2,
-     "builds": [
-       {
-         "src": "dist/server.js",
-         "use": "@vercel/node"
-       }
-     ],
-     "routes": [
-       {
-         "src": "/(.*)",
-         "dest": "dist/server.js"
-       }
-     ]
-   }
-   ```
+</div>
 
-3. **Deploy**
-   ```bash
-   vercel --prod
-   ```
+#### **Manual Deployment**
 
-4. **Set environment variables** in Vercel dashboard
+```bash
+# Install Vercel CLI
+npm i -g vercel
 
-### Production Checklist
+# Build the project
+pnpm build
+
+# Deploy
+vercel
+
+# Set environment variables
+vercel env add DB_URL
+vercel env add JWT_ACCESS_SECRET
+vercel env add STRIPE_SECRET_KEY
+
+# Deploy to production
+vercel --prod
+```
+
+#### **Vercel Configuration**
+
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/server.js"
+    }
+  ]
+}
+```
+
+### **Production Checklist**
 
 - [ ] Set `NODE_ENV=production`
 - [ ] Update `FRONTEND_URL` to production domain
@@ -591,61 +791,74 @@ STRIPE_CANCELED_FRONTEND_URL=http://localhost:3000/payment/cancel
 - [ ] Set up Stripe webhook endpoint in dashboard
 - [ ] Enable Cloudinary auto-optimization
 - [ ] Configure CORS for production domain
-- [ ] Set secure cookie flags
-- [ ] Enable request rate limiting (if applicable)
-- [ ] Set up error monitoring (Sentry, etc.)
-- [ ] Configure logging service
-- [ ] Test all payment flows end-to-end
+- [ ] Set secure cookie flags (`secure: true`, `sameSite: 'none'`)
+- [ ] Change default admin password after first login
+- [ ] Test payment flows end-to-end
+- [ ] Set up error monitoring (optional)
 
 ---
 
-## 🤝 Contributing
+## 🌟 **Author**
 
-Contributions are welcome! Please follow these guidelines:
+<div align="center">
+  <a href="https://github.com/zahid-official">
+    <img src="https://github.com/zahid-official.png" width="150" height="150" style="border-radius: 50%;" alt="Zahid Official" />
+  </a>
+  
+  <h3>Zahid Official</h3>
+  <p><b>Full Stack Developer | Tech Enthusiast</b></p>
+  
+  [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/zahid-official)
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/zahid-web)
+  [![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:zahid.official8@gmail.com)
+  
+  <p>Built with passion and dedication to create scalable e-commerce solutions</p>
+</div>
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+---
+
+## 🔗 **Project Links**
+
+<div align="center">
+
+| Resource              | URL                                                                        |
+| --------------------- | -------------------------------------------------------------------------- |
+| 🌐 **Live API**       | [lorvic-api.vercel.app](https://lorvic-api.vercel.app/)                   |
+| 💻 **Client App**     | [lorvic-official.vercel.app](https://lorvic-official.vercel.app/)         |
+| 🗄️ **Server Repo**   | [GitHub - Server](https://github.com/zahid-official/milestone-18-server)  |
+| 📱 **Client Repo**    | [GitHub - Client](https://github.com/zahid-official/milestone-18-client)  |
+
+</div>
+
+---
+
+## 🤝 **Contributing**
+
+Contributions make the open source community amazing! Any contributions you make are **greatly appreciated**.
+
+```bash
+1. Fork the Project
+2. Create your Feature Branch (git checkout -b feature/AmazingFeature)
+3. Commit your Changes (git commit -m 'Add some AmazingFeature')
+4. Push to the Branch (git push origin feature/AmazingFeature)
 5. Open a Pull Request
+```
 
 ### Code Standards
 
 - Follow existing TypeScript conventions
 - Write meaningful commit messages
-- Add JSDoc comments for complex functions
-- Ensure all tests pass before submitting
+- Add comments for complex logic
+- Ensure all scripts pass before submitting
 - Update documentation for API changes
 
----
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Author
-
-**Zahid Official**
-- GitHub: [@zahid-official](https://github.com/zahid-official)
-- Project: [Lorvic Platform](https://github.com/zahid-official/milestone-18-server)
-
----
-
-## 🙏 Acknowledgments
-
-- Express.js team for the robust framework
-- Stripe for seamless payment processing
-- Cloudinary for reliable media storage
-- MongoDB team for excellent documentation
-- All open-source contributors
-
----
+</br>
 
 <div align="center">
+  
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
 
-**[⬆ Back to Top](#lorvic-backend-api)**
+**[⬆ Back to Top](#lorvic-api)**
 
 Made with ❤️ by [Zahid Official](https://github.com/zahid-official)
 
