@@ -240,7 +240,7 @@ const createOrder = async (payload: IOrder, userId: string) => {
         line_items: [
           {
             price_data: {
-              currency: "bdt",
+              currency: "usd",
               product_data: {
                 name: product.title,
                 description: product.description ?? "Order payment",

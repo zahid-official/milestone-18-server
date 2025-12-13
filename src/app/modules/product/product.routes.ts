@@ -10,16 +10,8 @@ import { createProductSchema, updateProductSchema } from "./product.validation";
 const router = Router();
 
 // Get routes
-router.get(
-  "/",
-  validateToken(Role.VENDOR, Role.ADMIN),
-  ProductController.getAllProducts
-);
-router.get(
-  "/singleProduct/:id",
-  validateToken(Role.VENDOR, Role.ADMIN),
-  ProductController.getSingleProduct
-);
+router.get("/", ProductController.getAllProducts);
+router.get("/singleProduct/:id", ProductController.getSingleProduct);
 
 // Post routes
 router.post(
